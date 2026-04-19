@@ -1,0 +1,17 @@
+/* Layout glue for React shell; design tokens live in repo-root styles.css */
+
+.templateCarousel {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 4px 2px 12px;
+  margin: 0 -2px;
+  scroll-snap-type: x proximity;
+  -webkit-overflow-scrolling: touch;
+}
+
+.templateCarousel .choice {
+  flex: 0 0 auto;
+  min-width: 132px;
+  scroll-snap-align: start;
+}

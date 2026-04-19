@@ -1,0 +1,14 @@
+---
+description: Zawsze uwzględniaj PRODUCT-BRIEF.md przy decyzjach produktowych i implementacji
+alwaysApply: true
+---
+
+# Brief produktowy (Brogress)
+
+Przed proponowaniem lub zmianą funkcji, UX, nazewnictwa i zakresu pracy **bierz pod uwagę** plik **`PRODUCT-BRIEF.md`** w katalogu głównym repozytorium.
+
+- **Czytaj lub odśwież kontekst** z `PRODUCT-BRIEF.md`, gdy zadanie dotyczy zachowania aplikacji, ekranów, przepływów, słownika (np. template, profil, widok treningu) albo priorytetów produktu.
+- **Dopasuj propozycje** do założeń z briefu: prostota, start w widoku treningu, kontynuacja od ostatniego treningu, karuzela szablonów, odbiorca (doświadczeni użytkownicy siłowni).
+- Jeśli brief i bieżące wymaganie się **rozjeżdżają**, **wskaż to wyraźnie** zamiast milcząco ignorować brief.
+
+Ścieżka: `PRODUCT-BRIEF.md` (root projektu).

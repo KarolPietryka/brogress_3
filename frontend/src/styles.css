@@ -1,0 +1,1870 @@
+:root {
+  --bg0: #0b0d10;
+  --bg1: #111722;
+  --card: rgba(255, 255, 255, 0.06);
+  --card2: rgba(255, 255, 255, 0.08);
+  --line: rgba(255, 255, 255, 0.12);
+  --text: rgba(255, 255, 255, 0.92);
+  --muted: rgba(255, 255, 255, 0.7);
+  --muted2: rgba(255, 255, 255, 0.55);
+  --accent: #ffcf5a;
+  --accent2: #ff8e5a;
+  --danger: #ff5a76;
+  --shadow: 0 30px 80px rgba(0, 0, 0, 0.55);
+  --radius: 18px;
+  --radius2: 12px;
+  --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+    "Courier New", monospace;
+  --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell,
+    Noto Sans, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  color: var(--text);
+  font-family: var(--sans);
+  /* Avoid double-tap zoom on mobile (keeps taps aligned with layout). */
+  touch-action: manipulation;
+  background: radial-gradient(1200px 900px at 20% 10%, #19243a 0%, transparent 60%),
+    radial-gradient(1200px 900px at 85% 25%, #3a1b2b 0%, transparent 62%),
+    linear-gradient(180deg, var(--bg1) 0%, var(--bg0) 100%);
+  overflow-x: hidden;
+}
+
+.bg {
+  position: fixed;
+  inset: -100px;
+  background-image: radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.06) 1px, transparent 0);
+  background-size: 28px 28px;
+  opacity: 0.55;
+  pointer-events: none;
+  transform: rotate(-2deg);
+}
+
+.app {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 28px 18px 46px;
+  position: relative;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.25);
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.btn-toggle-on {
+  border-color: rgba(255, 207, 90, 0.5);
+  background: rgba(255, 207, 90, 0.12);
+}
+
+.btn-toggle-on:hover {
+  border-color: rgba(255, 207, 90, 0.65);
+  background: rgba(255, 207, 90, 0.16);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.mark {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+  box-shadow: 0 20px 60px rgba(255, 169, 90, 0.22);
+  position: relative;
+}
+
+.mark::after {
+  content: "";
+  position: absolute;
+  inset: 10px 9px 11px 12px;
+  border-radius: 10px;
+  border: 2px solid rgba(0, 0, 0, 0.25);
+  transform: rotate(12deg);
+}
+
+.title {
+  font-family: var(--mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-size: 14px;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.subtitle {
+  margin-top: 2px;
+  font-size: 12px;
+  color: var(--muted2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.btn {
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text);
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: transform 140ms ease, background 140ms ease, border-color 140ms ease;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.18);
+}
+
+.btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn:disabled:hover {
+  transform: none;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.btn:active {
+  transform: translateY(0);
+}
+
+.btn.primary {
+  border-color: rgba(255, 207, 90, 0.45);
+  background: linear-gradient(135deg, rgba(255, 207, 90, 0.22), rgba(255, 142, 90, 0.14));
+}
+
+.btn.primary:hover {
+  border-color: rgba(255, 207, 90, 0.65);
+}
+
+.content {
+  margin-top: 16px;
+}
+
+.panel {
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  background: rgba(0, 0, 0, 0.12);
+  backdrop-filter: blur(10px);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.panel-head {
+  padding: 16px 16px 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.panel-title {
+  margin: 0;
+  font-size: 18px;
+}
+
+.panel-hint {
+  margin: 6px 0 0;
+  font-size: 13px;
+  color: var(--muted2);
+}
+
+.graph-shell-status {
+  margin: 0 16px 12px;
+}
+
+.graph-shell-loading {
+  margin: 12px 0 0;
+  text-align: center;
+  font-size: 13px;
+  color: var(--muted2);
+}
+
+.graph-shell-empty {
+  margin: 0 16px 18px;
+}
+
+.volume-chart {
+  width: 100%;
+  min-height: 280px;
+}
+
+.graph-volume-body {
+  padding-bottom: 8px;
+}
+
+.volume-chart-region {
+  padding: 8px 12px 0;
+}
+
+.graph-volume-table-wrap {
+  padding: 8px 16px 20px;
+}
+
+.graph-volume-table-wrap--below {
+  padding-top: 4px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  margin-top: 4px;
+}
+
+.graph-volume-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.graph-volume-table th,
+.graph-volume-table td {
+  text-align: left;
+  padding: 10px 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.graph-volume-table th {
+  color: var(--muted2);
+  font-weight: 600;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.graph-volume-col-num,
+.graph-volume-num {
+  text-align: right;
+}
+
+.graph-volume-num {
+  font-family: var(--mono);
+}
+
+.graph-shell-panel .graph-shell {
+  padding: 20px 16px 24px;
+}
+
+.graph-shell-chart {
+  position: relative;
+  min-height: 220px;
+  border-radius: var(--radius2);
+  border: 1px dashed rgba(255, 255, 255, 0.14);
+  background: rgba(0, 0, 0, 0.2);
+  padding: 24px 20px 28px 36px;
+}
+
+.graph-shell-bars {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 8px;
+  height: 160px;
+  padding-bottom: 4px;
+}
+
+.graph-shell-bar {
+  flex: 1;
+  max-width: 48px;
+  margin: 0 auto;
+  border-radius: 6px 6px 2px 2px;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 207, 90, 0.18) 0%,
+    rgba(255, 255, 255, 0.06) 100%
+  );
+  opacity: 0.85;
+}
+
+.graph-shell-axis {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.1);
+  pointer-events: none;
+}
+
+.graph-shell-axis--x {
+  left: 36px;
+  right: 20px;
+  bottom: 18px;
+  height: 1px;
+}
+
+.graph-shell-axis--y {
+  left: 28px;
+  top: 24px;
+  bottom: 28px;
+  width: 1px;
+}
+
+.template {
+  padding: 14px 16px 18px;
+  display: grid;
+  gap: 10px;
+}
+
+.empty {
+  padding: 18px;
+  border-radius: var(--radius2);
+  border: 1px dashed rgba(255, 255, 255, 0.2);
+  color: var(--muted);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.pill {
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 2px 7px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(2, 4, 8, 0.65);
+  backdrop-filter: blur(6px);
+  z-index: 50;
+  animation: fadeIn 160ms ease-out;
+}
+
+.modal {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: max(18px, env(safe-area-inset-top, 0px)) max(18px, env(safe-area-inset-right, 0px))
+    max(18px, env(safe-area-inset-bottom, 0px)) max(18px, env(safe-area-inset-left, 0px));
+  z-index: 60;
+  overflow: auto;
+}
+
+.modal-card {
+  width: min(720px, 100%);
+  max-height: calc(100vh - 36px);
+  max-height: calc(100dvh - max(36px, env(safe-area-inset-top, 0px) + env(safe-area-inset-bottom, 0px)));
+  border-radius: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(10, 12, 16, 0.55);
+  backdrop-filter: blur(14px);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transform: translateY(8px) scale(0.99);
+  animation: popIn 180ms ease-out forwards;
+  /* Native selects / lists follow app dark theme where the engine allows it */
+  color-scheme: dark;
+}
+
+.modal-head {
+  padding: 16px 16px 12px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 207, 90, 0.1) 0%,
+    rgba(255, 255, 255, 0.03) 48%,
+    rgba(255, 142, 90, 0.05) 100%
+  );
+}
+
+.modal-kicker {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 207, 90, 0.9);
+}
+
+.modal-title {
+  margin: 2px 0 0;
+  font-size: 18px;
+}
+
+.modal-head-detail {
+  margin: 4px 0 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.icon-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text);
+  cursor: pointer;
+  transition: transform 140ms ease, background 140ms ease;
+}
+
+.icon-btn:hover {
+  transform: translateY(-1px);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.modal-body {
+  padding: 14px 16px 10px;
+  overflow: auto;
+  flex: 1;
+}
+
+.modal-foot {
+  padding: 12px 16px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(0, 0, 0, 0.18);
+  flex: 0 0 auto;
+}
+
+.spacer {
+  flex: 1;
+}
+
+@media (max-width: 640px) {
+  .modal {
+    /* Below status / URL chrome: keep global close (X) in the visual viewport */
+    padding-top: max(28px, calc(env(safe-area-inset-top, 0px) + 36px));
+  }
+
+  .modal-head .icon-btn {
+    flex-shrink: 0;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes popIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (max-width: 520px) {
+  .header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.choice {
+  text-align: center;
+  font: inherit;
+  color: var(--text);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 14px;
+  padding: 10px 6px;
+  cursor: pointer;
+  transition: transform 140ms ease, border-color 140ms ease, background 140ms ease;
+}
+
+.choice:hover {
+  transform: translateY(-1px);
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.22);
+}
+
+.choice.selected {
+  border-color: rgba(255, 207, 90, 0.55);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 207, 90, 0.14),
+    rgba(255, 255, 255, 0.03)
+  );
+}
+
+.choice-title {
+  font-size: 13px;
+  font-weight: 650;
+  letter-spacing: 0.01em;
+  line-height: 1.2;
+  word-break: break-word;
+}
+
+.choice-sub {
+  margin-top: 4px;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 12px;
+}
+
+.note {
+  padding: 14px;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.03);
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.checks {
+  display: grid;
+  gap: 10px;
+}
+
+.checks--draftFlip {
+  position: relative;
+}
+
+.check {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 12px 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.check input {
+  width: 18px;
+  height: 18px;
+  accent-color: #ffcf5a;
+}
+
+.check-text {
+  font-size: 14px;
+}
+
+.pickerList {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.exercisePick {
+  width: 100%;
+  min-width: 0;
+  text-align: left;
+  font: inherit;
+  font-size: 14px;
+  color: var(--text);
+  padding: 10px 12px;
+  line-height: 1.25;
+  word-break: break-word;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+  cursor: pointer;
+  transition: transform 140ms ease, border-color 140ms ease, background 140ms ease;
+}
+
+.exercisePick:hover {
+  transform: translateY(-1px);
+  border-color: rgba(255, 207, 90, 0.35);
+  background: rgba(255, 207, 90, 0.08);
+}
+
+.exercisePick:active {
+  transform: translateY(0);
+}
+
+.exerciseRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.03);
+  min-height: 46px;
+  transition: border-color 0.22s ease, box-shadow 0.22s ease, opacity 0.2s ease;
+  /* Pointer-drag on the whole row: prevent native text selection / iOS callout so a
+     long-press / press-and-move doesn't get reinterpreted as "select text". */
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  cursor: grab;
+}
+
+.exerciseRow:active {
+  cursor: grabbing;
+}
+
+/* Composer row hosts form inputs only (no drag source) — restore default affordances. */
+.exerciseRow--composer {
+  cursor: auto;
+}
+
+.exerciseRow--composer:active {
+  cursor: auto;
+}
+
+/* Text inputs inside draggable rows keep normal text selection + caret. */
+.exerciseRow input,
+.exerciseRow textarea {
+  -webkit-user-select: text;
+  user-select: text;
+  cursor: text;
+}
+
+/* While a pointer drag is active, block touch scrolling so our pointermove handler
+   can freely resolve drop zones without the browser hijacking the gesture. */
+body.is-pointer-dragging {
+  touch-action: none;
+  cursor: grabbing;
+}
+
+body.is-pointer-dragging * {
+  cursor: grabbing !important;
+}
+
+.exerciseRow--dragOver {
+  border-color: rgba(255, 207, 90, 0.65);
+  box-shadow: 0 0 0 2px rgba(255, 207, 90, 0.28), 0 10px 28px rgba(255, 207, 90, 0.12);
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.exerciseRow--dragging {
+  opacity: 0.58;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
+  z-index: 2;
+  transition: opacity 0.2s ease, box-shadow 0.2s ease;
+}
+
+/*
+ * Progress-bar row: wide, touch-friendly separator between DONE (above) and PLANNED (below).
+ * Drag by the grip handle to move the boundary; it also accepts exercise drops (row becomes first PLANNED).
+ */
+.workoutProgressBar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  margin: 6px 0;
+  border-radius: 14px;
+  border: 1px solid rgba(120, 200, 255, 0.55);
+  background: linear-gradient(
+    90deg,
+    rgba(80, 160, 240, 0.1) 0%,
+    rgba(80, 160, 240, 0.22) 50%,
+    rgba(80, 160, 240, 0.1) 100%
+  );
+  box-shadow: 0 0 0 1px rgba(120, 200, 255, 0.15), 0 4px 18px rgba(80, 160, 240, 0.12);
+  min-height: 44px;
+  cursor: grab;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.workoutProgressBar:active {
+  cursor: grabbing;
+}
+
+.workoutProgressBar--dragging {
+  opacity: 0.58;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
+}
+
+.workoutProgressBar--dragOver {
+  border-color: rgba(255, 207, 90, 0.75);
+  box-shadow: 0 0 0 2px rgba(255, 207, 90, 0.32), 0 10px 28px rgba(255, 207, 90, 0.18);
+  background: linear-gradient(
+    90deg,
+    rgba(255, 207, 90, 0.12) 0%,
+    rgba(255, 207, 90, 0.22) 50%,
+    rgba(255, 207, 90, 0.12) 100%
+  );
+}
+
+.workoutProgressBar__handle {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 40px;
+  margin: -4px 0 -4px -4px;
+  border-radius: 10px;
+  cursor: grab;
+  touch-action: none;
+  color: rgba(190, 230, 255, 0.75);
+}
+
+.workoutProgressBar__handle:active {
+  cursor: grabbing;
+}
+
+.workoutProgressBar__grip {
+  display: block;
+  width: 10px;
+  height: 22px;
+  background-image: radial-gradient(circle, currentColor 1.2px, transparent 1.7px);
+  background-size: 5px 6px;
+  background-position: 0 1px;
+  opacity: 0.95;
+}
+
+.workoutProgressBar__label {
+  flex: 1 1 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(190, 230, 255, 0.98);
+}
+
+.workoutProgressBar__counter {
+  font-variant-numeric: tabular-nums;
+  padding: 3px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(120, 200, 255, 0.5);
+  background: rgba(80, 160, 240, 0.14);
+}
+
+/* Invisible tail drop zone below the last row — expands hit area for append / bar-to-bottom drops. */
+.workoutEndDrop {
+  height: 22px;
+  margin-top: 2px;
+  border-radius: 12px;
+  border: 1px dashed transparent;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.workoutEndDrop--dragOver {
+  border-color: rgba(255, 207, 90, 0.55);
+  background: rgba(255, 207, 90, 0.06);
+}
+
+.dragHandle {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 40px;
+  margin: -4px 0 -4px -4px;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  cursor: grab;
+  touch-action: none;
+  color: rgba(255, 255, 255, 0.45);
+  transition: background 140ms ease, border-color 140ms ease, color 140ms ease;
+}
+
+.dragHandle:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.dragHandle:active {
+  cursor: grabbing;
+}
+
+.dragHandle[draggable="false"] {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.dragHandleGrip {
+  display: block;
+  width: 8px;
+  height: 18px;
+  background-image: radial-gradient(circle, currentColor 1px, transparent 1.5px);
+  background-size: 4px 6px;
+  background-position: 0 1px;
+  opacity: 0.9;
+}
+
+/* Modal draft rows — status from API (prefill) or new picks */
+.exerciseRow--done {
+  border-style: solid;
+  border-color: rgba(110, 210, 160, 0.42);
+  background: rgba(70, 180, 130, 0.09);
+  box-shadow: inset 0 0 0 1px rgba(110, 210, 160, 0.08);
+}
+
+.exerciseRow--done .muscleTag {
+  border-color: rgba(110, 210, 160, 0.45);
+  color: rgba(160, 235, 200, 0.95);
+  background: rgba(70, 180, 130, 0.12);
+}
+
+/*
+ * All rows below the progress bar share one blue "planned" color.
+ * Previous yellow `planned` + blue `nextUp` split was dropped — only DONE (green) vs PLANNED (blue) remains.
+ */
+.exerciseRow--planned {
+  border-style: solid;
+  border-color: rgba(120, 200, 255, 0.55);
+  background: rgba(80, 160, 240, 0.12);
+  box-shadow: 0 0 0 1px rgba(120, 200, 255, 0.15), 0 4px 18px rgba(80, 160, 240, 0.12);
+}
+
+.exerciseRow--planned .muscleTag {
+  border-color: rgba(120, 200, 255, 0.5);
+  color: rgba(190, 230, 255, 0.98);
+  background: rgba(80, 160, 240, 0.14);
+}
+
+.exerciseNameCell {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Draft rows (wide): stack the muscle tag on top and the exercise name below it. */
+.exerciseRow:not(.exerciseRow--composer) .exerciseNameCell {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 4px;
+}
+
+.exerciseRow:not(.exerciseRow--composer) .exerciseNameCell .muscleTag {
+  flex: 0 0 auto;
+  align-self: flex-start;
+  min-width: 0;
+  max-width: 100%;
+}
+
+/* Draft list only: inset exercise title so it does not hug the cell corner (composer sticky unchanged). */
+.exerciseRow:not(.exerciseRow--composer) .exerciseNameCell .check-text {
+  flex: 0 0 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  box-sizing: border-box;
+  padding: 3px 8px;
+}
+
+/* Current workout list: name chip matches row status; compact bar (shorter / tighter than W/R fields). */
+.checks--draftFlip .exerciseRow.exerciseRow--done .exerciseNameCell .check-text,
+.checks--draftFlip .exerciseRow.exerciseRow--planned .exerciseNameCell .check-text {
+  display: flex;
+  align-items: center;
+  min-height: 38px;
+  padding: 0 8px;
+  box-sizing: border-box;
+  border-radius: 10px;
+}
+
+.checks--draftFlip .exerciseRow.exerciseRow--done .exerciseNameCell .check-text {
+  border: 1px solid rgba(42, 118, 78, 0.88);
+  background: rgba(70, 180, 130, 0.16);
+}
+
+.checks--draftFlip .exerciseRow.exerciseRow--planned .exerciseNameCell .check-text {
+  border: 1px solid rgba(38, 98, 168, 0.88);
+  background: rgba(80, 160, 240, 0.16);
+}
+
+.muscleTag {
+  flex-shrink: 0;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255, 207, 90, 0.95);
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 207, 90, 0.38);
+  background: rgba(255, 207, 90, 0.1);
+  line-height: 1.2;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rowRemove {
+  flex: 0 0 auto;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(0, 0, 0, 0.2);
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 140ms ease, color 140ms ease;
+}
+
+.rowRemove:hover {
+  background: rgba(255, 90, 118, 0.15);
+  color: rgba(255, 142, 154, 0.95);
+}
+
+.workoutComposerBlock {
+  position: sticky;
+  top: 0;
+  z-index: 4;
+  margin-bottom: 14px;
+  padding: 6px 0 14px;
+  margin-top: -2px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  background: linear-gradient(
+    180deg,
+    rgba(12, 14, 18, 0.97) 0%,
+    rgba(12, 14, 18, 0.9) 70%,
+    rgba(12, 14, 18, 0.82) 100%
+  );
+  backdrop-filter: blur(10px);
+}
+
+.exerciseRow--composer {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.14);
+}
+
+.exerciseRow--composerFlash {
+  animation: composerRowBlueFlash 0.75s ease-out forwards;
+  position: relative;
+  z-index: 1;
+}
+
+@keyframes composerRowBlueFlash {
+  0% {
+    box-shadow: 0 0 0 0 transparent, 0 0 0 rgba(80, 170, 255, 0);
+  }
+  22% {
+    box-shadow: 0 0 0 3px rgba(120, 200, 255, 0.65), 0 0 36px rgba(70, 150, 255, 0.5);
+  }
+  55% {
+    box-shadow: 0 0 0 2px rgba(120, 200, 255, 0.35), 0 0 22px rgba(70, 150, 255, 0.28);
+  }
+  100% {
+    box-shadow: 0 0 0 0 transparent, 0 0 0 transparent;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .exerciseRow--composerFlash {
+    animation: none;
+  }
+}
+
+.dragHandleSpacer {
+  flex: 0 0 auto;
+  width: 28px;
+  height: 40px;
+  margin: -4px 0 -4px -4px;
+  pointer-events: none;
+}
+
+/* Sticky composer: muscle group picker above exercise picker (stacked); draft rows keep .muscleTag + name. */
+.exerciseNameCell--composer {
+  flex-wrap: nowrap;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 6px;
+}
+
+/*
+ * Sticky composer only: muscle-group dropdown matches exercise dropdown chrome
+ * (draft rows still use .muscleTag — unchanged).
+ */
+.exerciseNameCell--composer .composerPickTrigger--group {
+  flex: 0 0 auto;
+  align-self: stretch;
+  width: 100%;
+  min-width: 0;
+  max-width: none;
+}
+
+/* Exercise picker: same column width as group; shared .composerPickTrigger rules supply look. */
+.exerciseNameCell--composer .composerPickTrigger--exercise {
+  flex: 0 0 auto;
+  width: 100%;
+  min-width: 0;
+}
+
+/* Composer row: opens prototype pick list (sheet / popover) */
+.composerPickTrigger {
+  min-width: 0;
+  height: 46px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background-color: rgba(0, 0, 0, 0.18);
+  color: var(--text);
+  padding: 0 34px 0 12px;
+  font-size: 14px;
+  font-family: inherit;
+  line-height: 1.2;
+  text-align: left;
+  cursor: pointer;
+  color-scheme: dark;
+  position: relative;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20'%3E%3Cpath fill='%238991a1' d='M5,7.5L10,12.5L15,7.5z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 14px 14px;
+}
+
+.composerPickTrigger:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.composerPickTrigger:focus-visible {
+  outline: 2px solid rgba(255, 207, 90, 0.55);
+  outline-offset: 2px;
+}
+
+.composerPickTrigger__text {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.composerPickTrigger__text--ellipsis {
+  text-align: left;
+}
+
+/* Share the name cell with exercise picker; cap width so reps/weight/action stay untouched. */
+.composerPickTrigger--group {
+  flex: 1.35 1 0;
+  min-width: 0;
+  width: auto;
+  max-width: 68%;
+}
+
+.composerPickTrigger--exercise {
+  flex: 1;
+  min-width: 0;
+}
+
+/*
+ * Narrow modal rows: must live AFTER .composerPickTrigger* so mobile rules win.
+ * Two rows: (1) handle + muscle/group label + W/R + action — (2) exercise name / picker full width.
+ * .exerciseNameCell uses display:contents so tag + title become direct grid children.
+ */
+@media (max-width: 640px) {
+  .exerciseRow {
+    display: grid;
+    grid-template-columns: 26px minmax(0, 1fr) 50px 50px 34px;
+    grid-template-rows: auto auto;
+    column-gap: 6px;
+    row-gap: 6px;
+    align-items: start;
+    padding: 8px 10px;
+    min-height: 0;
+  }
+
+  .exerciseRow .exerciseNameCell {
+    display: contents;
+  }
+
+  .dragHandleSpacer,
+  .dragHandle {
+    grid-column: 1;
+    grid-row: 1 / span 2;
+    margin: 0;
+    width: 26px;
+    height: 36px;
+    justify-self: center;
+    align-self: center;
+  }
+
+  /* Draft row: muscle tag fills the flexible column (W/R/X stay fixed-width). */
+  .exerciseRow:not(.exerciseRow--composer) .exerciseNameCell .muscleTag {
+    grid-column: 2;
+    grid-row: 1;
+    justify-self: stretch;
+    align-self: center;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .exerciseRow:not(.exerciseRow--composer) .exerciseNameCell .check-text {
+    grid-column: 2 / span 4;
+    grid-row: 2;
+    min-width: 0;
+    align-self: center;
+    justify-self: stretch;
+    overflow: hidden;
+    white-space: normal;
+    word-break: break-word;
+    line-height: 1.35;
+    padding: 8px 12px 10px;
+  }
+
+  .checks--draftFlip .exerciseRow.exerciseRow--done .exerciseNameCell .check-text,
+  .checks--draftFlip .exerciseRow.exerciseRow--planned .exerciseNameCell .check-text {
+    min-height: 30px;
+    padding: 0 8px;
+    border-radius: 8px;
+    align-items: center;
+  }
+
+  .exerciseFields {
+    grid-column: 3 / 5;
+    grid-row: 1;
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+    align-self: center;
+  }
+
+  .rowAdd,
+  .rowRemove {
+    grid-column: 5;
+    grid-row: 1;
+    justify-self: center;
+    align-self: center;
+    box-sizing: border-box;
+    width: 34px;
+    min-width: 0;
+    max-width: 34px;
+    height: 34px;
+    padding: 0;
+    margin: 0;
+    font-size: 18px;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+
+  .numField {
+    box-sizing: border-box;
+    width: 50px;
+    min-width: 0;
+    max-width: 50px;
+    height: 36px;
+    padding: 0 4px;
+    font-size: 16px;
+    border-radius: 10px;
+    text-align: center;
+  }
+
+  /* Composer: group + W/R + on row 1; exercise picker full width on row 2 */
+  .exerciseRow--composer {
+    grid-template-columns: minmax(0, 1fr) 50px 50px 34px;
+  }
+
+  .exerciseRow--composer .dragHandleSpacer {
+    display: none;
+  }
+
+  .exerciseRow--composer .exerciseNameCell .composerPickTrigger--group {
+    grid-column: 1;
+    grid-row: 1;
+    justify-self: stretch;
+    align-self: center;
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+  }
+
+  .exerciseRow--composer .exerciseNameCell .composerPickTrigger--exercise {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    min-width: 0;
+    height: auto;
+    min-height: 36px;
+    padding-top: 6px;
+    padding-bottom: 6px;
+  }
+
+  .exerciseRow--composer > .exerciseFields {
+    grid-column: 2 / 4;
+    grid-row: 1;
+  }
+
+  .exerciseRow--composer > .rowAdd {
+    grid-column: 4;
+    grid-row: 1;
+  }
+
+  .exerciseRow--composer .composerPickTrigger--exercise .composerPickTrigger__text {
+    white-space: normal;
+    line-height: 1.25;
+  }
+
+  .composerPickTrigger {
+    height: 36px;
+    padding: 0 22px 0 8px;
+    font-size: 12px;
+    border-radius: 10px;
+    background-size: 11px 11px;
+    background-position: right 6px center;
+  }
+
+  .composerPickTrigger--group,
+  .composerPickTrigger--exercise {
+    flex: none;
+    min-width: 0;
+  }
+}
+
+/* Portal pick list (prototype): sheet on narrow, popover on wide */
+.pickList-root {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.pickList-backdrop {
+  position: absolute;
+  inset: 0;
+  border: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  pointer-events: auto;
+  background: rgba(2, 4, 8, 0.55);
+  backdrop-filter: blur(3px);
+  animation: pickListFadeIn 160ms ease-out;
+}
+
+.pickList-panel {
+  pointer-events: auto;
+  background: rgba(14, 16, 22, 0.96);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
+  color: var(--text);
+  color-scheme: dark;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.pickList-panel--sheet {
+  position: relative;
+  width: 100%;
+  max-height: min(72vh, 520px);
+  border-radius: 20px 20px 0 0;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  animation: pickSheetSlideUp 240ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* Centered dialog variant: used for forms with text inputs (e.g. "Add custom exercise") so the
+   mobile soft keyboard doesn't cover the field like it does on the bottom-sheet layout. */
+.pickList-root--centered {
+  align-items: flex-start;
+  padding: max(8vh, 24px) 16px 16px;
+}
+
+.pickList-panel--dialog {
+  position: relative;
+  width: min(420px, 100%);
+  max-height: min(80vh, 520px);
+  border-radius: 16px;
+  animation: pickListFadeIn 180ms ease-out;
+}
+
+.pickList-panel--popover {
+  flex-direction: column;
+  border-radius: 14px;
+  animation: pickListFadeIn 140ms ease-out;
+  overflow: hidden;
+}
+
+.pickList-sheetGrip {
+  width: 40px;
+  height: 5px;
+  margin: 10px auto 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.18);
+  flex-shrink: 0;
+}
+
+.pickList-header {
+  flex-shrink: 0;
+  padding: 8px 16px 12px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255, 207, 90, 0.88);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.pickList-list {
+  list-style: none;
+  margin: 0;
+  padding: 8px 8px 12px;
+  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
+}
+
+.pickList-item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  font: inherit;
+  font-size: 15px;
+  color: var(--text);
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  background: transparent;
+  cursor: pointer;
+  transition: background 120ms ease, border-color 120ms ease;
+}
+
+.pickList-item:hover {
+  background: rgba(255, 207, 90, 0.08);
+  border-color: rgba(255, 207, 90, 0.2);
+}
+
+.pickList-item:focus-visible {
+  outline: 2px solid rgba(120, 200, 255, 0.65);
+  outline-offset: 0;
+}
+
+/* Row wrapper for deletable picker items: keeps the main option button flexible and pins the X to the end. */
+.pickList-itemRow {
+  display: flex;
+  align-items: stretch;
+  gap: 6px;
+}
+
+.pickList-itemRow .pickList-item {
+  flex: 1;
+}
+
+.pickList-itemDelete {
+  flex: 0 0 auto;
+  align-self: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text);
+  opacity: 0.6;
+  font: inherit;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 120ms ease, border-color 120ms ease, opacity 120ms ease, color 120ms ease;
+}
+
+.pickList-itemDelete:hover {
+  opacity: 1;
+  color: #ff6b6b;
+  background: rgba(255, 107, 107, 0.1);
+  border-color: rgba(255, 107, 107, 0.3);
+}
+
+.pickList-itemDelete:focus-visible {
+  outline: 2px solid rgba(255, 107, 107, 0.65);
+  outline-offset: 0;
+  opacity: 1;
+}
+
+@keyframes pickListFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes pickSheetSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pickList-backdrop,
+  .pickList-panel--sheet,
+  .pickList-panel--popover,
+  .pickList-panel--dialog {
+    animation: none;
+  }
+}
+
+.rowAdd {
+  flex: 0 0 auto;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 207, 90, 0.42);
+  background: rgba(255, 207, 90, 0.12);
+  color: rgba(255, 230, 170, 0.98);
+  font-size: 22px;
+  line-height: 1;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 140ms ease, border-color 140ms ease;
+}
+
+.rowAdd:hover:not(:disabled) {
+  background: rgba(255, 207, 90, 0.2);
+  border-color: rgba(255, 207, 90, 0.6);
+}
+
+.rowAdd:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.workoutPlanEmpty {
+  margin-top: 4px;
+}
+
+.exerciseLeft {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+  cursor: pointer;
+}
+
+.exerciseLeft input {
+  width: 18px;
+  height: 18px;
+  accent-color: #ffcf5a;
+}
+
+.exerciseFields {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.numField {
+  width: 96px;
+  height: 46px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(0, 0, 0, 0.18);
+  color: var(--text);
+  padding: 0 12px;
+  /* 16px+ prevents iOS Safari from zooming the viewport on focus. */
+  font-size: 16px;
+  outline: none;
+}
+
+.numField::placeholder {
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.numField:focus {
+  border-color: rgba(255, 207, 90, 0.55);
+}
+
+.grouped {
+  display: grid;
+  gap: 14px;
+}
+
+.groupHeaderRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 2px 2px 10px;
+  flex-wrap: wrap;
+}
+
+.groupHeaderRow .groupHeader {
+  margin: 0;
+}
+
+.groupHeader {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.7);
+  margin: 2px 2px 10px;
+}
+
+.btn-compact {
+  padding: 7px 12px;
+  font-size: 12px;
+  border-radius: 10px;
+}
+
+.btn-danger-text {
+  border-color: rgba(255, 120, 130, 0.35);
+  color: rgba(255, 170, 175, 0.95);
+  background: rgba(255, 80, 100, 0.08);
+}
+
+.btn-danger-text:hover:not(:disabled) {
+  border-color: rgba(255, 140, 150, 0.55);
+  background: rgba(255, 80, 100, 0.14);
+}
+
+.errorText {
+  max-width: 420px;
+  font-size: 12px;
+  color: rgba(255, 90, 118, 0.95);
+}
+
+.card {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 18px;
+  padding: 14px 14px 12px;
+}
+
+.card-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.card-title {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+.card--selectable {
+  cursor: pointer;
+  transition: border-color 140ms ease, background 140ms ease, box-shadow 140ms ease;
+}
+
+.card--selectable:hover {
+  border-color: rgba(255, 207, 90, 0.35);
+  background: rgba(255, 255, 255, 0.045);
+}
+
+.card--selectable:focus-visible {
+  outline: 2px solid rgba(255, 207, 90, 0.65);
+  outline-offset: 2px;
+}
+
+/* Historical workout still collapsed: first tap expands list on Home (before edit). */
+.card--expandCollapsed {
+  cursor: pointer;
+  transition: border-color 140ms ease, background 140ms ease;
+}
+
+.card--expandCollapsed:hover {
+  border-color: rgba(120, 200, 255, 0.35);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.card--expandCollapsed:focus-visible {
+  outline: 2px solid rgba(120, 200, 255, 0.65);
+  outline-offset: 2px;
+}
+
+.card-meta {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.workoutRows {
+  margin-top: 10px;
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.workoutRow {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 5px;
+  padding: 9px 10px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.03);
+  min-width: 0;
+}
+
+.workoutRowGroup {
+  font-size: 11px;
+  font-family: var(--mono);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: rgba(255, 207, 90, 0.85);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.workoutRowName {
+  font-size: 14px;
+  line-height: 1.3;
+  word-break: break-word;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.workoutRowStats {
+  font-family: var(--mono);
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.8);
+  margin-top: auto;
+}
+
+.workoutRow--done {
+  border-style: solid;
+  border-color: rgba(110, 210, 160, 0.38);
+  background: rgba(70, 180, 130, 0.08);
+}
+
+.workoutRow--done .workoutRowGroup {
+  color: rgba(150, 230, 190, 0.88);
+}
+
+/* Summary tile for PLANNED exercise — matches the blue used by modal planned rows for coherence. */
+.workoutRow--planned {
+  border-style: solid;
+  border-color: rgba(120, 200, 255, 0.55);
+  background: rgba(80, 160, 240, 0.12);
+}
+
+.workoutRow--planned .workoutRowGroup {
+  color: rgba(190, 230, 255, 0.9);
+}
+
+/* Collapsed history strip (expand target lives on parent .card--expandCollapsed). */
+.workoutSummaryCollapsedHit {
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  text-align: inherit;
+  font: inherit;
+  color: inherit;
+  cursor: inherit;
+  border-radius: 0;
+}
+
+.workoutSummaryCollapsedHit--static {
+  pointer-events: none;
+}
+
+.workoutRow--more {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100%;
+  border-style: dashed;
+  border-color: rgba(255, 255, 255, 0.22);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.workoutRow--more .workoutRowMoreDots {
+  font-family: var(--mono);
+  font-size: 18px;
+  line-height: 1;
+  color: rgba(255, 255, 255, 0.5);
+  letter-spacing: 0.12em;
+}
+
+.workoutSummaryCollapse {
+  flex-shrink: 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(255, 207, 90, 0.9);
+  background: transparent;
+  border: 1px solid rgba(255, 207, 90, 0.4);
+  border-radius: 999px;
+  padding: 4px 12px;
+  cursor: pointer;
+}
+
+.workoutSummaryCollapse:hover {
+  border-color: rgba(255, 207, 90, 0.6);
+  background: rgba(255, 207, 90, 0.08);
+}
+
+@media (max-width: 900px) {
+  .workoutRows {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 520px) {
+  .grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .choice {
+    padding: 8px 4px;
+    border-radius: 12px;
+  }
+
+  .choice-title {
+    font-size: 12px;
+  }
+
+  .workoutRows {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .pickerList {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.app--entry {
+  min-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.content--entry {
+  width: 100%;
+}
+
+.content--entry .panel {
+  max-width: 420px;
+  margin: 0 auto;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 8px 0 0;
+}
+
+.auth-label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.auth-poc-warning {
+  margin: 0;
+  font-size: 0.78rem;
+  line-height: 1.45;
+  color: var(--muted2);
+  font-style: italic;
+}
+
+.auth-poc-warning-link {
+  color: var(--accent);
+  word-break: break-all;
+  font-style: normal;
+}
+
+.auth-input {
+  padding: 12px 14px;
+  border-radius: var(--radius2);
+  border: 1px solid var(--line);
+  background: rgba(0, 0, 0, 0.25);
+  color: var(--text);
+  font-size: 1rem;
+}
+
+.auth-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.btn-linkish {
+  background: transparent;
+  border: none;
+  color: var(--accent);
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 6px 0;
+  font: inherit;
+  align-self: flex-start;
+}
+
+.btn-linkish:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.header-nick {
+  color: var(--accent);
+  font-weight: 600;
+}

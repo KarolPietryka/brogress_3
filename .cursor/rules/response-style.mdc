@@ -1,0 +1,14 @@
+---
+description: Styl odpowiedzi w tym projekcie — krótko, najlepiej w punktach
+alwaysApply: true
+---
+
+# Zachowanie w odpowiedziach (ten projekt)
+
+Ten plik określa, jak agent ma odpowiadać w **tym** repozytorium:
+
+- **Krótko** — bez zbędnego wstępu i powtórzeń; tyle, ile potrzeba do zadania.
+- **Bulletpointy** — domyślnie lista punktów zamiast długich akapitów (wyjątek: gdy użytkownik wyraźnie prosi o formę inną niż listę).
+- **Proporcjonalnie** — proste pytanie = krótka odpowiedź; złożone zadanie może być nieco dłuższe, nadal w punktach tam, gdzie to ma sens.
+
+Nie stosuj tej reguły w sposób sztywny kosztem jasności (np. jeden niejasny punkt lepiej rozwinąć niż „uciąć za wszelką cenę”).
