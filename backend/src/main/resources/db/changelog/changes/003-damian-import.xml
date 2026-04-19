@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+  <!--
+    User szldam (password szldam), exercises from damian_excercises, workout + DONE sets from damian exports.
+    Regenerate: python scripts/generate_damian_seed.py (expects workout id 14 / set id 144 after 002).
+  -->
+  <changeSet id="003-01-damian-seed" author="brogress">
+    <sqlFile
+        path="003-damian-seed.sql"
+        relativeToChangelogFile="true"
+        splitStatements="true"
+        endDelimiter=";"
+        stripComments="true"/>
+  </changeSet>
+
+</databaseChangeLog>

@@ -1,5 +1,7 @@
 export type ExerciseLine = {
   id: string;
+  /** Backend catalog id when the row came from the exercise picker. */
+  exerciseDbId?: number;
   muscle: string;
   name: string;
   weight: string;

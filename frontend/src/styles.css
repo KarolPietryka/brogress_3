@@ -640,15 +640,6 @@ body {
   cursor: grabbing;
 }
 
-/* Composer row hosts form inputs only (no drag source) — restore default affordances. */
-.exerciseRow--composer {
-  cursor: auto;
-}
-
-.exerciseRow--composer:active {
-  cursor: auto;
-}
-
 /* Text inputs inside draggable rows keep normal text selection + caret. */
 .exerciseRow input,
 .exerciseRow textarea {
@@ -960,39 +951,31 @@ body.is-pointer-dragging * {
   margin-bottom: 14px;
   padding: 6px 0 14px;
   margin-top: -2px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-  background: linear-gradient(
-    180deg,
-    rgba(12, 14, 18, 0.97) 0%,
-    rgba(12, 14, 18, 0.9) 70%,
-    rgba(12, 14, 18, 0.82) 100%
-  );
-  backdrop-filter: blur(10px);
-}
-
-.exerciseRow--composer {
-  background: rgba(255, 255, 255, 0.05);
-  border-color: rgba(255, 255, 255, 0.14);
+  margin-left: -4px;
+  margin-right: -4px;
+  padding-left: 4px;
+  padding-right: 4px;
+  /* Let the composer form be the only rounded “card”; no second slab behind it. */
+  border-bottom: none;
+  background: transparent;
 }
 
 .exerciseRow--composerFlash {
-  animation: composerRowBlueFlash 0.75s ease-out forwards;
+  animation: composerRowAccentFlash 0.75s ease-out forwards;
   position: relative;
   z-index: 1;
 }
 
-@keyframes composerRowBlueFlash {
-  0% {
-    box-shadow: 0 0 0 0 transparent, 0 0 0 rgba(80, 170, 255, 0);
-  }
-  22% {
-    box-shadow: 0 0 0 3px rgba(120, 200, 255, 0.65), 0 0 36px rgba(70, 150, 255, 0.5);
-  }
-  55% {
-    box-shadow: 0 0 0 2px rgba(120, 200, 255, 0.35), 0 0 22px rgba(70, 150, 255, 0.28);
-  }
+/* Quick nudge after + — same chrome as `.choice.selected`, brief border emphasis */
+@keyframes composerRowAccentFlash {
+  0%,
   100% {
-    box-shadow: 0 0 0 0 transparent, 0 0 0 transparent;
+    border-color: rgba(255, 207, 90, 0.55);
+    box-shadow: none;
+  }
+  35% {
+    border-color: rgba(255, 207, 90, 0.82);
+    box-shadow: 0 0 0 1px rgba(255, 207, 90, 0.18);
   }
 }
 
@@ -1043,7 +1026,7 @@ body.is-pointer-dragging * {
   height: 46px;
   border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.14);
-  background-color: rgba(0, 0, 0, 0.18);
+  background-color: rgba(255, 255, 255, 0.06);
   color: var(--text);
   padding: 0 34px 0 12px;
   font-size: 14px;
@@ -1069,9 +1052,11 @@ body.is-pointer-dragging * {
   outline-offset: 2px;
 }
 
-select.composerPickTrigger {
+select.composerPickTrigger,
+button.composerPickTrigger {
   -webkit-appearance: none;
   appearance: none;
+  font: inherit;
   cursor: pointer;
 }
 
@@ -1082,7 +1067,7 @@ select.composerPickTrigger {
   height: 46px;
   border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.14);
-  background-color: rgba(0, 0, 0, 0.18);
+  background-color: rgba(255, 255, 255, 0.06);
   color: var(--text);
   padding: 0 12px;
   font-size: 14px;
@@ -1242,9 +1227,9 @@ select.composerPickTrigger {
     text-align: center;
   }
 
-  /* Composer: group + W/R + on row 1; exercise picker full width on row 2 */
+  /* Composer: group + (kg W × R) + on row 1; exercise picker full width on row 2 */
   .exerciseRow--composer {
-    grid-template-columns: minmax(0, 1fr) 50px 50px 34px;
+    grid-template-columns: minmax(0, 1fr) auto 34px;
   }
 
   .exerciseRow--composer .dragHandleSpacer {
@@ -1272,13 +1257,28 @@ select.composerPickTrigger {
   }
 
   .exerciseRow--composer > .exerciseFields {
-    grid-column: 2 / 4;
+    grid-column: 2;
     grid-row: 1;
+    justify-self: end;
+    align-self: center;
   }
 
   .exerciseRow--composer > .rowAdd {
-    grid-column: 4;
+    grid-column: 3;
     grid-row: 1;
+  }
+
+  .exerciseRow--composer .exerciseBarSets .numField--bar,
+  .exerciseRow--composer .exerciseBarSets .numField--barReps {
+    box-sizing: border-box;
+    width: 50px;
+    min-width: 50px;
+    max-width: 50px;
+    height: 36px;
+    padding: 0 4px;
+    border-radius: 10px;
+    font-size: 16px;
+    text-align: center;
   }
 
   .exerciseRow--composer .composerPickTrigger--exercise .composerPickTrigger__text {
@@ -1300,6 +1300,28 @@ select.composerPickTrigger {
     flex: none;
     min-width: 0;
   }
+}
+
+/*
+ * Sticky composer — same surface as a selected template tile (`.choice.selected`).
+ */
+.exerciseRow.exerciseRow--composer {
+  position: relative;
+  cursor: auto;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 207, 90, 0.55);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 207, 90, 0.14),
+    rgba(255, 255, 255, 0.03)
+  );
+  box-shadow: none;
+  outline: none;
+  transition: border-color 140ms ease, background 140ms ease, box-shadow 140ms ease;
+}
+
+.exerciseRow.exerciseRow--composer:active {
+  cursor: auto;
 }
 
 /* Portal pick list (prototype): sheet on narrow, popover on wide */
@@ -1417,6 +1439,16 @@ select.composerPickTrigger {
 .pickList-item:hover {
   background: rgba(255, 207, 90, 0.08);
   border-color: rgba(255, 207, 90, 0.2);
+}
+
+.pickList-item:disabled {
+  opacity: 0.48;
+  cursor: not-allowed;
+}
+
+.pickList-item:disabled:hover {
+  background: transparent;
+  border-color: transparent;
 }
 
 .pickList-item:focus-visible {
@@ -1562,10 +1594,20 @@ select.composerPickTrigger {
   border-radius: 12px;
 }
 
-.exerciseLeft input {
-  width: 18px;
-  height: 18px;
-  accent-color: #ffcf5a;
+/* Plan row: muscle / name are separate buttons (done vs load into composer). */
+.exerciseRow:not(.exerciseRow--composer) .exerciseNameCell button.muscleTag,
+.exerciseRow:not(.exerciseRow--composer) .exerciseNameCell button.check-text {
+  margin: 0;
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+}
+
+.exerciseRow:not(.exerciseRow--composer) .exerciseNameCell button.muscleTag {
+  font-family: var(--mono);
 }
 
 .exerciseFields {
@@ -1933,4 +1975,58 @@ select.composerPickTrigger {
 .header-nick {
   color: var(--accent);
   font-weight: 600;
+}
+
+.login-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: min(70vh, 560px);
+  padding-top: 8px;
+}
+
+.login-panel {
+  width: 100%;
+  max-width: 420px;
+}
+
+.login-form {
+  padding: 18px 18px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.login-label {
+  font-size: 12px;
+  color: var(--muted2);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.login-input {
+  margin-top: 2px;
+}
+
+.login-error {
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: var(--danger);
+}
+
+.login-actions {
+  margin-top: 6px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.login-submit {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.login-arrow {
+  font-size: 18px;
+  line-height: 1;
 }

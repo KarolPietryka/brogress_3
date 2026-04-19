@@ -9,15 +9,14 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import java.util.UUID;
 
 @Entity
 @Table(name = "workout_exercises")
 public class WorkoutExercise {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.UUID)
-  private UUID id;
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
   @JoinColumn(name = "workout_id", nullable = false)
@@ -38,7 +37,7 @@ public class WorkoutExercise {
   @Column(nullable = false, name = "sort_order")
   private int sortOrder;
 
-  public UUID getId() {
+  public Long getId() {
     return id;
   }
 

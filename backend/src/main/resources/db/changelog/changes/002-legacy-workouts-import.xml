@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+  <!--
+    Imports workouts.csv + workout_set into workouts / workout_exercises for user_id = 1.
+    Regenerate SQL: python scripts/generate_legacy_workout_seed.py (repo root).
+    Legacy column mapping: workout_date; repetitions -> reps; line_order -> sort_order;
+    DECIMAL weight -> INT (rounded); workouts 1..n / sets 1..m explicit; exercise_id -> name (see script).
+  -->
+  <changeSet id="002-01-legacy-workouts-seed" author="brogress">
+    <sqlFile
+        path="002-legacy-workouts-seed.sql"
+        relativeToChangelogFile="true"
+        splitStatements="true"
+        endDelimiter=";"
+        stripComments="true"/>
+  </changeSet>
+
+</databaseChangeLog>

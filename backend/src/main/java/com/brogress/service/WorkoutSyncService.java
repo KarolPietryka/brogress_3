@@ -8,7 +8,6 @@ import com.brogress.domain.Workout;
 import com.brogress.domain.WorkoutExercise;
 import com.brogress.repo.WorkoutExerciseRepository;
 import com.brogress.repo.WorkoutRepository;
-import java.util.UUID;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -47,7 +46,7 @@ public class WorkoutSyncService {
   }
 
   private Workout resolveWorkout(User user, WorkoutSyncRequest request) {
-    UUID requestedId = parseUuidOrNull(request.workoutId());
+    Long requestedId = parseLongIdOrNull(request.workoutId());
     if (requestedId != null) {
       Workout byId =
           workoutRepository
@@ -66,13 +65,13 @@ public class WorkoutSyncService {
             });
   }
 
-  private static UUID parseUuidOrNull(String raw) {
+  private static Long parseLongIdOrNull(String raw) {
     if (!StringUtils.hasText(raw)) {
       return null;
     }
     try {
-      return UUID.fromString(raw.trim());
-    } catch (IllegalArgumentException e) {
+      return Long.parseLong(raw.trim());
+    } catch (NumberFormatException e) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid workoutId");
     }
   }

@@ -134,15 +134,15 @@
   align-self: center;
 }
 
-/* Waga / powt.: wąskie pola (monospace); lekko poszerzone wzgl. „3ch / 2ch” */
+/* Weight / reps in plan rows: same footprint as sticky composer `.numField` (styles.css). */
 .numField--bar {
   flex: 0 0 auto;
   box-sizing: border-box;
-  width: calc(4ch + 14px);
-  min-width: calc(4ch + 14px);
-  max-width: calc(4ch + 14px);
-  height: 40px;
-  padding: 0 6px;
+  width: 96px;
+  min-width: 96px;
+  max-width: 96px;
+  height: 46px;
+  padding: 0 12px;
   font-family: var(--mono);
   font-size: 16px;
   line-height: 1.15;
@@ -153,11 +153,11 @@
 .numField--barReps {
   flex: 0 0 auto;
   box-sizing: border-box;
-  width: calc(3ch + 14px);
-  min-width: calc(3ch + 14px);
-  max-width: calc(3ch + 14px);
-  height: 40px;
-  padding: 0 6px;
+  width: 96px;
+  min-width: 96px;
+  max-width: 96px;
+  height: 46px;
+  padding: 0 12px;
   font-family: var(--mono);
   font-size: 16px;
   line-height: 1.15;
@@ -167,17 +167,19 @@
 
 @media (max-width: 640px) {
   .checks--draftFlip .exerciseBarSets .numField--bar {
-    width: calc(4ch + 14px);
-    min-width: calc(4ch + 14px);
-    max-width: calc(4ch + 14px);
-    height: 38px;
+    width: 50px;
+    min-width: 50px;
+    max-width: 50px;
+    height: 36px;
+    padding: 0 4px;
   }
 
   .checks--draftFlip .exerciseBarSets .numField--barReps {
-    width: calc(3ch + 14px);
-    min-width: calc(3ch + 14px);
-    max-width: calc(3ch + 14px);
-    height: 38px;
+    width: 50px;
+    min-width: 50px;
+    max-width: 50px;
+    height: 36px;
+    padding: 0 4px;
   }
 
   .checks--draftFlip .exerciseRow:not(.exerciseRow--composer) {

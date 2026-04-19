@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+  <changeSet id="001-01-schema" author="brogress">
+    <createTable tableName="users">
+      <column name="id" type="BIGINT" autoIncrement="true">
+        <constraints primaryKey="true" nullable="false"/>
+      </column>
+      <column name="nick" type="VARCHAR(64)">
+        <constraints nullable="false" unique="true"/>
+      </column>
+      <column name="password_hash" type="VARCHAR(255)">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+
+    <createTable tableName="workouts">
+      <column name="id" type="BIGINT" autoIncrement="true">
+        <constraints primaryKey="true" nullable="false"/>
+      </column>
+      <column name="user_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="workout_date" type="DATE">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+    <addUniqueConstraint
+        constraintName="uk_workout_user_date"
+        tableName="workouts"
+        columnNames="user_id, workout_date"/>
+    <addForeignKeyConstraint
+        constraintName="fk_workouts_user"
+        baseTableName="workouts"
+        baseColumnNames="user_id"
+        referencedTableName="users"
+        referencedColumnNames="id"/>
+
+    <createTable tableName="workout_exercises">
+      <column name="id" type="BIGINT" autoIncrement="true">
+        <constraints primaryKey="true" nullable="false"/>
+      </column>
+      <column name="workout_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="body_part" type="VARCHAR(128)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="exercise_name" type="VARCHAR(256)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="weight" type="INT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="reps" type="INT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="sort_order" type="INT">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+    <addForeignKeyConstraint
+        constraintName="fk_workout_exercises_workout"
+        baseTableName="workout_exercises"
+        baseColumnNames="workout_id"
+        referencedTableName="workouts"
+        referencedColumnNames="id"/>
+
+    <createTable tableName="exercises">
+      <column name="id" type="BIGINT" autoIncrement="true">
+        <constraints primaryKey="true" nullable="false"/>
+      </column>
+      <column name="user_id" type="BIGINT">
+        <constraints nullable="false"/>
+      </column>
+      <column name="name" type="VARCHAR(256)">
+        <constraints nullable="false"/>
+      </column>
+      <column name="body_part" type="VARCHAR(32)">
+        <constraints nullable="false"/>
+      </column>
+    </createTable>
+    <addUniqueConstraint
+        constraintName="uk_exercise_user_name_bodypart"
+        tableName="exercises"
+        columnNames="user_id, name, body_part"/>
+    <addForeignKeyConstraint
+        constraintName="fk_exercises_user"
+        baseTableName="exercises"
+        baseColumnNames="user_id"
+        referencedTableName="users"
+        referencedColumnNames="id"/>
+  </changeSet>
+
+  <changeSet id="001-02-seed-user" author="brogress">
+    <insert tableName="users">
+      <column name="nick" value="kapiet"/>
+      <column name="password_hash" value="kapiet"/>
+    </insert>
+  </changeSet>
+
+  <changeSet id="001-03-seed-exercises" author="brogress">
+    <sql splitStatements="true" stripComments="true"><![CDATA[
+INSERT INTO exercises (user_id, name, body_part) SELECT u.id, 'Butterfly', 'chest' FROM users u WHERE u.nick = 'kapiet';
+INSERT INTO exercises (user_id, name, body_part) SELECT u.id, 'Incline Bench Press', 'chest' FROM users u WHERE u.nick = 'kapiet';
+INSERT INTO exercises (user_id, name, body_part) SELECT u.id, 'Bench Press', 'chest' FROM users u WHERE u.nick = 'kapiet';
+INSERT INTO exercises (user_id, name, body_part) SELECT u.id, 'Dip', 'chest' FROM users u WHERE u.nick = 'kapiet';
+INSERT INTO exercises (user_id, name, body_part) SELECT u.id, 'Pull Up', 'back' FROM users u WHERE u.nick = 'kapiet';
+INSERT INTO exercises (user_id, name, body_part) SELECT u.id, 'Barbell Row', 'back' FROM users u WHERE u.nick = 'kapiet';
+INSERT INTO exercises (user_id, name, body_part) SELECT u.id, 'Machine Row', 'back' FROM users u WHERE u.nick = 'kapiet';
+INSERT INTO exercises (user_id, name, body_part) SELECT u.id, 'Squat', 'legs' FROM users u WHERE u.nick = 'kapiet';
+INSERT INTO exercises (user_id, name, body_part) SELECT u.id, 'Chin Up', 'arms' FROM users u WHERE u.nick = 'kapiet';
+INSERT INTO exercises (user_id, name, body_part) SELECT u.id, 'Dumbbell Curl', 'arms' FROM users u WHERE u.nick = 'kapiet';
+INSERT INTO exercises (user_id, name, body_part) SELECT u.id, 'Barbell Overhead Press', 'shoulders' FROM users u WHERE u.nick = 'kapiet';
+INSERT INTO exercises (user_id, name, body_part) SELECT u.id, 'Machine Overhead Press', 'shoulders' FROM users u WHERE u.nick = 'kapiet';
+INSERT INTO exercises (user_id, name, body_part) SELECT u.id, 'Dumbbell Overhead Press', 'shoulders' FROM users u WHERE u.nick = 'kapiet';
+INSERT INTO exercises (user_id, name, body_part) SELECT u.id, 'Lateral Raise', 'shoulders' FROM users u WHERE u.nick = 'kapiet';
+INSERT INTO exercises (user_id, name, body_part) SELECT u.id, 'Incline Maszyna', 'chest' FROM users u WHERE u.nick = 'kapiet';
+INSERT INTO exercises (user_id, name, body_part) SELECT u.id, 'push-ups', 'chest' FROM users u WHERE u.nick = 'kapiet';
+INSERT INTO exercises (user_id, name, body_part) SELECT u.id, 'Sztywne bunch press', 'chest' FROM users u WHERE u.nick = 'kapiet';
+INSERT INTO exercises (user_id, name, body_part) SELECT u.id, 'Pull na maszynie z ruchomymi', 'back' FROM users u WHERE u.nick = 'kapiet';
+INSERT INTO exercises (user_id, name, body_part) SELECT u.id, 'Lat Pulldown', 'back' FROM users u WHERE u.nick = 'kapiet';
+INSERT INTO exercises (user_id, name, body_part) SELECT u.id, 'Triceps Curl', 'arms' FROM users u WHERE u.nick = 'kapiet';
+INSERT INTO exercises (user_id, name, body_part) SELECT u.id, 'Leg Raise', 'abs' FROM users u WHERE u.nick = 'kapiet';
+INSERT INTO exercises (user_id, name, body_part) SELECT u.id, 'Max pull-up', 'back' FROM users u WHERE u.nick = 'kapiet';
+INSERT INTO exercises (user_id, name, body_part) SELECT u.id, 'Australian pull-up 9 na taśmie', 'back' FROM users u WHERE u.nick = 'kapiet';
+INSERT INTO exercises (user_id, name, body_part) SELECT u.id, 'Australian bic 9 na taśmie', 'back' FROM users u WHERE u.nick = 'kapiet';
+    ]]></sql>
+  </changeSet>
+
+</databaseChangeLog>

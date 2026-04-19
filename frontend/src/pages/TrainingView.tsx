@@ -1,10 +1,12 @@
 import {
   useEffect,
   useMemo,
+  useRef,
   useState,
   type DragEvent as ReactDragEvent,
   type FocusEvent as ReactFocusEvent,
 } from "react";
+import { ComposerPickListPortal } from "../components/ComposerPickListPortal";
 import { TemplateCarousel } from "../components/TemplateCarousel";
 import {
   TEMPLATES,
@@ -15,7 +17,19 @@ import {
   type WorkoutTemplate,
 } from "../data/templates";
 import {
-  COMPOSER_MUSCLE_OPTIONS,
+  BODY_PART_LABELS,
+  BODY_PARTS,
+  parseBodyPartId,
+  templateMuscleToBodyPartId,
+  type BodyPartId,
+} from "../constants/bodyParts";
+import { getAuthToken } from "../lib/authToken";
+import {
+  fetchExerciseById,
+  fetchExercisesForBodyPart,
+  type ExerciseDto,
+} from "../lib/exercisesApi";
+import {
   MAX_REPS_INPUT_LEN,
   MAX_WEIGHT_INPUT_LEN,
   newComposerLineId,
@@ -28,19 +42,23 @@ function lineKey(ex: ExerciseLine, index: number): string {
 
 /** Seed sticky composer from the last plan row (same idea as lastDraftLineComposerPrefill). */
 function tailPrefill(exercises: ExerciseLine[]): {
-  muscle: string;
+  bodyPartId: BodyPartId;
   weight: string;
   reps: string;
 } {
   const t = exercises[exercises.length - 1];
   if (!t) {
     return {
-      muscle: COMPOSER_MUSCLE_OPTIONS[0] ?? "Chest",
+      bodyPartId: "chest",
       weight: "0",
       reps: "",
     };
   }
-  return { muscle: t.muscle, weight: t.weight, reps: t.reps };
+  return {
+    bodyPartId: templateMuscleToBodyPartId(t.muscle),
+    weight: t.weight,
+    reps: t.reps,
+  };
 }
 
 /** Select all on focus (click / Tab); one-time mouseup preventDefault so selection stays. */
@@ -65,11 +83,94 @@ export function TrainingView() {
   );
 
   const pre0 = tailPrefill(initial.exercises);
-  const [composerMuscle, setComposerMuscle] = useState(pre0.muscle);
-  const [composerName, setComposerName] = useState("");
+  const [composerBodyPartId, setComposerBodyPartId] = useState<BodyPartId>(
+    pre0.bodyPartId,
+  );
+  const [composerExerciseName, setComposerExerciseName] = useState("");
   const [composerWeight, setComposerWeight] = useState(pre0.weight);
   const [composerReps, setComposerReps] = useState(pre0.reps);
+  const [composerExerciseDbId, setComposerExerciseDbId] = useState<number | null>(
+    null,
+  );
   const [composerFlash, setComposerFlash] = useState(false);
+  const [composerExerciseOptions, setComposerExerciseOptions] = useState<
+    ExerciseDto[]
+  >([]);
+  const [composerExercisesLoading, setComposerExercisesLoading] =
+    useState(false);
+  const [composerPickOpen, setComposerPickOpen] = useState<
+    "group" | "exercise" | null
+  >(null);
+  const groupPickAnchorRef = useRef<HTMLButtonElement>(null);
+  const exercisePickAnchorRef = useRef<HTMLButtonElement>(null);
+
+  const bodyPartPickItems = useMemo(
+    () =>
+      BODY_PARTS.map((id) => ({
+        key: id,
+        label: BODY_PART_LABELS[id],
+      })),
+    [],
+  );
+
+  const exercisePickItems = useMemo(() => {
+    const token = getAuthToken();
+    if (!token) {
+      return [
+        {
+          key: "__signin__",
+          label:
+            "Sign in — set localStorage brogress.jwt or VITE_DEV_JWT",
+          disabled: true as const,
+        },
+      ];
+    }
+    if (composerExercisesLoading) {
+      return [{ key: "__loading__", label: "Loading exercises…", disabled: true as const }];
+    }
+    if (composerExerciseOptions.length === 0) {
+      return [
+        {
+          key: "__empty__",
+          label: "No exercises for this body part",
+          disabled: true as const,
+        },
+      ];
+    }
+    return [
+      { key: "__placeholder__", label: "— Select exercise —" },
+      ...composerExerciseOptions.map((ex) => ({
+        key: `ex-${ex.id}`,
+        label: ex.name,
+        exerciseId: ex.id,
+      })),
+    ];
+  }, [composerExercisesLoading, composerExerciseOptions]);
+
+  useEffect(() => {
+    const token = getAuthToken();
+    if (!token) {
+      setComposerExerciseOptions([]);
+      setComposerExercisesLoading(false);
+      return;
+    }
+    let cancelled = false;
+    setComposerExerciseOptions([]);
+    setComposerExercisesLoading(true);
+    fetchExercisesForBodyPart(composerBodyPartId, token)
+      .then((list) => {
+        if (!cancelled) setComposerExerciseOptions(list);
+      })
+      .catch(() => {
+        if (!cancelled) setComposerExerciseOptions([]);
+      })
+      .finally(() => {
+        if (!cancelled) setComposerExercisesLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [composerBodyPartId]);
 
   useEffect(() => {
     const snapshot: WorkoutTemplate = {
@@ -117,26 +218,52 @@ export function TrainingView() {
     const exs = cloneTemplate(t).exercises;
     setRows(exs);
     const pre = tailPrefill(exs);
-    setComposerMuscle(pre.muscle);
+    setComposerBodyPartId(pre.bodyPartId);
     setComposerWeight(pre.weight);
     setComposerReps(pre.reps);
-    setComposerName("");
+    setComposerExerciseName("");
+    setComposerExerciseDbId(null);
+  }
+
+  async function fillComposerFromRow(ex: ExerciseLine) {
+    const token = getAuthToken();
+    let bodyPartId = templateMuscleToBodyPartId(ex.muscle);
+    let name = ex.name;
+
+    if (ex.exerciseDbId != null && token) {
+      try {
+        const dto = await fetchExerciseById(ex.exerciseDbId, token);
+        const fromApi = parseBodyPartId(dto.bodyPart);
+        if (fromApi) bodyPartId = fromApi;
+        name = dto.name;
+      } catch {
+        /* use row muscle label + name */
+      }
+    }
+
+    setComposerBodyPartId(bodyPartId);
+    setComposerExerciseName(name);
+    setComposerWeight(ex.weight);
+    setComposerReps(ex.reps);
+    setComposerExerciseDbId(ex.exerciseDbId ?? null);
+    setComposerFlash(true);
   }
 
   function addExerciseFromComposer() {
-    const name = composerName.trim();
+    const name = composerExerciseName.trim();
     if (!name) return;
     const line: ExerciseLine = {
       id: newComposerLineId(),
-      muscle: composerMuscle,
+      muscle: BODY_PART_LABELS[composerBodyPartId],
       name,
       weight: composerWeight || "0",
       reps: composerReps,
       done: false,
+      ...(composerExerciseDbId != null ? { exerciseDbId: composerExerciseDbId } : {}),
     };
     setRows((prev) => [...prev, line]);
-    setComposerName("");
-    setComposerMuscle(line.muscle);
+    setComposerExerciseName("");
+    setComposerExerciseDbId(null);
     setComposerWeight(line.weight);
     setComposerReps(line.reps);
     setComposerFlash(true);
@@ -184,8 +311,46 @@ export function TrainingView() {
     );
   }
 
+  const exercisePickDisabled =
+    !getAuthToken() ||
+    composerExercisesLoading ||
+    composerExerciseOptions.length === 0;
+
   return (
     <div className="trainingView">
+      <ComposerPickListPortal
+        open={composerPickOpen === "group"}
+        title="Body part"
+        items={bodyPartPickItems}
+        anchorRef={groupPickAnchorRef}
+        onClose={() => setComposerPickOpen(null)}
+        onPick={(item) => {
+          if (typeof item === "string") return;
+          if (item.disabled) return;
+          setComposerBodyPartId(item.key as BodyPartId);
+          setComposerExerciseName("");
+          setComposerExerciseDbId(null);
+        }}
+      />
+      <ComposerPickListPortal
+        open={composerPickOpen === "exercise"}
+        title="Exercise"
+        items={exercisePickItems}
+        anchorRef={exercisePickAnchorRef}
+        onClose={() => setComposerPickOpen(null)}
+        onPick={(item) => {
+          if (typeof item === "string") return;
+          if (item.disabled) return;
+          if (item.key === "__placeholder__") {
+            setComposerExerciseName("");
+            setComposerExerciseDbId(null);
+            return;
+          }
+          setComposerExerciseName(item.label);
+          setComposerExerciseDbId(item.exerciseId ?? null);
+        }}
+      />
+
       <div className="trainingView-head">
         <h1 className="panel-title">{"Today's workout"}</h1>
       </div>
@@ -210,43 +375,58 @@ export function TrainingView() {
             }}
             onAnimationEnd={(e) => {
               if (e.target !== e.currentTarget) return;
-              if (!e.animationName.includes("composerRowBlueFlash")) return;
+              if (!e.animationName.includes("composerRowAccentFlash")) return;
               setComposerFlash(false);
             }}
           >
             <div className="dragHandleSpacer" aria-hidden />
             <div className="exerciseNameCell exerciseNameCell--composer">
-              <select
+              <button
+                ref={groupPickAnchorRef}
+                type="button"
                 className="composerPickTrigger composerPickTrigger--group"
-                aria-label="Muscle group"
-                value={composerMuscle}
-                onChange={(e) => setComposerMuscle(e.target.value)}
+                aria-label="Body part"
+                aria-haspopup="listbox"
+                aria-expanded={composerPickOpen === "group"}
+                onClick={() =>
+                  setComposerPickOpen((p) => (p === "group" ? null : "group"))
+                }
               >
-                {!COMPOSER_MUSCLE_OPTIONS.includes(composerMuscle) ? (
-                  <option value={composerMuscle}>{composerMuscle}</option>
-                ) : null}
-                {COMPOSER_MUSCLE_OPTIONS.map((m) => (
-                  <option key={m} value={m}>
-                    {m}
-                  </option>
-                ))}
-              </select>
+                <span className="composerPickTrigger__text">
+                  {BODY_PART_LABELS[composerBodyPartId]}
+                </span>
+              </button>
+              <button
+                ref={exercisePickAnchorRef}
+                type="button"
+                className="composerPickTrigger composerPickTrigger--exercise"
+                aria-label="Exercise"
+                aria-haspopup="listbox"
+                aria-expanded={composerPickOpen === "exercise"}
+                disabled={exercisePickDisabled}
+                onClick={() =>
+                  setComposerPickOpen((p) => (p === "exercise" ? null : "exercise"))
+                }
+              >
+                <span className="composerPickTrigger__text composerPickTrigger__text--ellipsis">
+                  {!getAuthToken()
+                    ? "Sign in to load exercises"
+                    : composerExercisesLoading
+                      ? "Loading exercises…"
+                      : composerExerciseOptions.length === 0
+                        ? "No exercises for this body part"
+                        : composerExerciseName || "— Select exercise —"}
+                </span>
+              </button>
+            </div>
+            <div className="exerciseFields exerciseBarSets">
+              <span className="exerciseBarUnit">kg</span>
               <input
                 type="text"
-                className="composerExerciseInput composerPickTrigger--exercise"
-                autoComplete="off"
-                placeholder="Exercise name"
-                value={composerName}
-                onChange={(e) => setComposerName(e.target.value)}
-                aria-label="Exercise name"
-              />
-            </div>
-            <div className="exerciseFields">
-              <input
-                className="numField"
+                className="numField numField--bar"
                 inputMode="decimal"
                 maxLength={MAX_WEIGHT_INPUT_LEN}
-                placeholder="Weight"
+                autoComplete="off"
                 value={composerWeight}
                 onChange={(e) =>
                   setComposerWeight(
@@ -259,11 +439,15 @@ export function TrainingView() {
                 onFocus={selectAllOnFocus}
                 aria-label="Weight kg"
               />
+              <span className="exerciseBarTimes" aria-hidden>
+                ×
+              </span>
               <input
-                className="numField"
+                type="text"
+                className="numField numField--bar numField--barReps"
                 inputMode="decimal"
                 maxLength={MAX_REPS_INPUT_LEN}
-                placeholder="Reps"
+                autoComplete="off"
                 value={composerReps}
                 onChange={(e) =>
                   setComposerReps(
@@ -280,7 +464,7 @@ export function TrainingView() {
             <button
               type="submit"
               className="rowAdd"
-              disabled={!composerName.trim()}
+              disabled={!composerExerciseName.trim()}
               aria-label="Add exercise to plan"
             >
               +
@@ -350,18 +534,33 @@ export function TrainingView() {
                       <span className="dragHandleGrip" aria-hidden />
                     </div>
                   <div className="exerciseLeft">
-                    <button
-                      type="button"
+                    <div
                       className="exerciseLeft-toggle"
-                      onClick={() => toggleDone(index)}
-                      aria-pressed={ex.done}
-                      aria-label={`${ex.name} — ${ex.done ? "done" : "pending"}`}
+                      role="group"
+                      aria-label={`${ex.name} row`}
                     >
                       <div className="exerciseNameCell">
-                        <span className="muscleTag">{ex.muscle}</span>
-                        <span className="check-text">{ex.name}</span>
+                        <button
+                          type="button"
+                          className="muscleTag"
+                          onClick={() => toggleDone(index)}
+                          aria-pressed={ex.done}
+                          aria-label={`${ex.muscle} — mark ${ex.done ? "not done" : "done"}`}
+                        >
+                          {ex.muscle}
+                        </button>
+                        <button
+                          type="button"
+                          className="check-text"
+                          onClick={() => {
+                            void fillComposerFromRow(ex);
+                          }}
+                          aria-label={`Load ${ex.name} into add bar`}
+                        >
+                          {ex.name}
+                        </button>
                       </div>
-                    </button>
+                    </div>
                     <div
                       className="exerciseBarSets"
                       onClick={(e) => e.stopPropagation()}

@@ -28,18 +28,3 @@ export function sanitizeOptionalDecimalInput(value: string, maxLen: number): str
 export function newComposerLineId(): string {
   return crypto.randomUUID();
 }
-
-/** Muscle / body-part options for the sticky composer (covers templates + room for custom). */
-export const COMPOSER_MUSCLE_OPTIONS: string[] = [
-  "Chest",
-  "Back",
-  "Shoulders",
-  "Biceps",
-  "Triceps",
-  "Legs",
-  "Hamstrings",
-  "Core",
-  "Calves",
-  "Forearms",
-  "Other",
-];

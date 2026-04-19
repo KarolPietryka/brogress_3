@@ -1,6 +1,14 @@
-import { NavLink, Outlet } from "react-router-dom";
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import { setAuthToken } from "../lib/authToken";
 
 export function AppShell() {
+  const navigate = useNavigate();
+
+  function onLogout() {
+    setAuthToken(null);
+    navigate("/login", { replace: true });
+  }
+
   return (
     <>
       <div className="bg" aria-hidden />
@@ -30,6 +38,9 @@ export function AppShell() {
             >
               Your brogress
             </NavLink>
+            <button type="button" className="btn btn-linkish" onClick={onLogout}>
+              Log out
+            </button>
           </div>
         </header>
         <main className="content">

@@ -1,6 +1,7 @@
 package com.brogress.domain;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -10,14 +11,15 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
-import java.time.LocalDate;
 
 @Entity
 @Table(
-    name = "workouts",
+    name = "exercises",
     uniqueConstraints =
-        @UniqueConstraint(name = "uk_workout_user_date", columnNames = {"user_id", "workout_date"}))
-public class Workout {
+        @UniqueConstraint(
+            name = "uk_exercise_user_name_bodypart",
+            columnNames = {"user_id", "name", "body_part"}))
+public class Exercise {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,8 +29,12 @@ public class Workout {
   @JoinColumn(name = "user_id", nullable = false)
   private User user;
 
-  @Column(name = "workout_date", nullable = false)
-  private LocalDate workoutDate;
+  @Column(nullable = false, length = 256)
+  private String name;
+
+  @Convert(converter = BodyPartAttributeConverter.class)
+  @Column(name = "body_part", nullable = false, length = 32)
+  private BodyPart bodyPart;
 
   public Long getId() {
     return id;
@@ -42,11 +48,19 @@ public class Workout {
     this.user = user;
   }
 
-  public LocalDate getWorkoutDate() {
-    return workoutDate;
+  public String getName() {
+    return name;
   }
 
-  public void setWorkoutDate(LocalDate workoutDate) {
-    this.workoutDate = workoutDate;
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public BodyPart getBodyPart() {
+    return bodyPart;
+  }
+
+  public void setBodyPart(BodyPart bodyPart) {
+    this.bodyPart = bodyPart;
   }
 }
