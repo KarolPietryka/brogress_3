@@ -1,4 +1,11 @@
-import { useEffect, useMemo, useState } from "react";
+import {
+  useEffect,
+  useMemo,
+  useState,
+  type DragEvent as ReactDragEvent,
+  type FocusEvent as ReactFocusEvent,
+} from "react";
+import { TemplateCarousel } from "../components/TemplateCarousel";
 import {
   TEMPLATES,
   cloneTemplate,
@@ -12,6 +19,13 @@ function lineKey(ex: ExerciseLine, index: number): string {
   return `${ex.id}-${index}`;
 }
 
+/** Select all on focus (click / Tab); one-time mouseup preventDefault so selection stays. */
+function selectAllOnFocus(e: ReactFocusEvent<HTMLInputElement>): void {
+  const el = e.currentTarget;
+  el.select();
+  el.addEventListener("mouseup", (ev) => ev.preventDefault(), { once: true });
+}
+
 export function TrainingView() {
   const initial = useMemo(() => {
     const fromProfile = loadLastWorkoutFromProfile();
@@ -21,16 +35,51 @@ export function TrainingView() {
 
   const [activeTemplateId, setActiveTemplateId] = useState(initial.id);
   const [rows, setRows] = useState<ExerciseLine[]>(initial.exercises);
+  const [draggingIndex, setDraggingIndex] = useState<number | null>(null);
+  const [dragOverIndex, setDragOverIndex] = useState<number | "end" | null>(
+    null,
+  );
 
   useEffect(() => {
     const snapshot: WorkoutTemplate = {
       id: activeTemplateId,
       label:
-        TEMPLATES.find((t) => t.id === activeTemplateId)?.label ?? "Własny",
+        TEMPLATES.find((t) => t.id === activeTemplateId)?.label ?? "Custom",
       exercises: rows,
     };
     persistLastWorkout(snapshot);
   }, [activeTemplateId, rows]);
+
+  /** While dragging, auto-scroll when the pointer hugs the top/bottom of the viewport (mobile long lists). */
+  useEffect(() => {
+    if (draggingIndex === null) return;
+
+    const edgeRatio = 0.18;
+    const maxStep = 28;
+    const minStep = 5;
+
+    const onDragOver = (e: DragEvent) => {
+      const h =
+        typeof window.visualViewport !== "undefined" && window.visualViewport
+          ? window.visualViewport.height
+          : window.innerHeight;
+      const margin = Math.max(64, h * edgeRatio);
+      const y = e.clientY;
+
+      if (y > h - margin) {
+        const t = (y - (h - margin)) / margin;
+        const step = minStep + Math.min(1, Math.max(0, t)) * (maxStep - minStep);
+        window.scrollBy({ top: Math.round(step), behavior: "auto" });
+      } else if (y < margin) {
+        const t = (margin - y) / margin;
+        const step = minStep + Math.min(1, Math.max(0, t)) * (maxStep - minStep);
+        window.scrollBy({ top: -Math.round(step), behavior: "auto" });
+      }
+    };
+
+    document.addEventListener("dragover", onDragOver);
+    return () => document.removeEventListener("dragover", onDragOver);
+  }, [draggingIndex]);
 
   function applyTemplate(t: WorkoutTemplate) {
     setActiveTemplateId(t.id);
@@ -47,6 +96,32 @@ export function TrainingView() {
     setRows((prev) => prev.filter((_, i) => i !== index));
   }
 
+  /** Drop on a row swaps the dragged row with that row (two items exchange places). */
+  function swapRows(a: number, b: number) {
+    if (a === b) return;
+    setRows((prev) => {
+      const next = [...prev];
+      const rowA = next[a];
+      const rowB = next[b];
+      if (rowA === undefined || rowB === undefined) return prev;
+      next[a] = rowB;
+      next[b] = rowA;
+      return next;
+    });
+  }
+
+  /** Drop on the tail zone moves the row to the last position. */
+  function moveRowToEnd(from: number) {
+    setRows((prev) => {
+      if (from < 0 || from >= prev.length) return prev;
+      const next = [...prev];
+      const [item] = next.splice(from, 1);
+      if (item === undefined) return prev;
+      next.push(item);
+      return next;
+    });
+  }
+
   function toggleDone(index: number) {
     setRows((prev) =>
       prev.map((r, i) => (i === index ? { ...r, done: !r.done } : r)),
@@ -54,107 +129,160 @@ export function TrainingView() {
   }
 
   return (
-    <div className="panel">
-      <div className="panel-head">
-        <h1 className="panel-title">Dzisiejszy trening</h1>
-        <p className="panel-hint">
-          Start od ostatniej sesji (profil). Karuzela u góry — wybór szablonu
-          (ćwiczenia, waga, powtórzenia).
-        </p>
+    <div className="trainingView">
+      <div className="trainingView-head">
+        <h1 className="panel-title">{"Today's workout"}</h1>
       </div>
 
       <div className="template">
-        <div className="groupHeader">Szablony</div>
-        <div
-          className="templateCarousel"
-          role="list"
-          aria-label="Karuzela szablonów treningu"
-        >
-          {TEMPLATES.map((t) => (
-            <button
-              key={t.id}
-              type="button"
-              role="listitem"
-              className={`choice ${activeTemplateId === t.id ? "selected" : ""}`}
-              onClick={() => applyTemplate(t)}
-            >
-              <div className="choice-title">{t.label}</div>
-              <div className="choice-sub">{t.exercises.length} ćwiczeń</div>
-            </button>
-          ))}
-        </div>
+        <div className="groupHeader">Templates</div>
+        <TemplateCarousel
+          templates={TEMPLATES}
+          activeTemplateId={activeTemplateId}
+          onSelectTemplate={applyTemplate}
+        />
 
         <div className="grouped">
           <div className="groupHeaderRow">
             <h2 className="groupHeader">Plan</h2>
             <span className="pill">
-              {rows.filter((r) => r.done).length}/{rows.length} zrobione
+              {rows.filter((r) => r.done).length}/{rows.length} done
             </span>
           </div>
 
           <div className="checks checks--draftFlip">
             {rows.length === 0 ? (
               <div className="empty workoutPlanEmpty">
-                Brak pozycji — wybierz szablon albo dodaj ćwiczenia (kolejna
-                iteracja UI).
+                No rows yet — pick a template or add exercises (next UI
+                iteration).
               </div>
             ) : (
-              rows.map((ex, index) => (
-                <div
-                  key={lineKey(ex, index)}
-                  className={`exerciseRow ${ex.done ? "exerciseRow--done" : "exerciseRow--planned"}`}
-                >
-                  <div className="dragHandleSpacer" aria-hidden />
-                  <button
-                    type="button"
-                    className="exerciseLeft"
-                    onClick={() => toggleDone(index)}
-                    aria-pressed={ex.done}
+              <>
+                {rows.map((ex, index) => (
+                  <div
+                    key={lineKey(ex, index)}
+                    className={`exerciseRow ${ex.done ? "exerciseRow--done" : "exerciseRow--planned"}${
+                      draggingIndex === index ? " exerciseRow--dragging" : ""
+                    }${
+                      dragOverIndex === index && draggingIndex !== index
+                        ? " exerciseRow--dragOver"
+                        : ""
+                    }`}
+                    onDragOver={(e: ReactDragEvent<HTMLDivElement>) => {
+                      e.preventDefault();
+                      e.dataTransfer.dropEffect = "move";
+                      setDragOverIndex(index);
+                    }}
+                    onDrop={(e: ReactDragEvent<HTMLDivElement>) => {
+                      e.preventDefault();
+                      const from = Number.parseInt(
+                        e.dataTransfer.getData("text/plain"),
+                        10,
+                      );
+                      if (Number.isNaN(from)) return;
+                      swapRows(from, index);
+                      setDraggingIndex(null);
+                      setDragOverIndex(null);
+                    }}
                   >
-                    <input
-                      type="checkbox"
-                      checked={ex.done}
-                      readOnly
-                      tabIndex={-1}
-                      aria-hidden
-                    />
-                    <div className="exerciseNameCell">
-                      <span className="muscleTag">{ex.muscle}</span>
-                      <span className="check-text">{ex.name}</span>
+                    <div
+                      className="dragHandle"
+                      draggable
+                      title="Drop on a row to swap, or below the list to move to end"
+                      aria-label={`Swap row: ${ex.name}`}
+                      onDragStart={(e: ReactDragEvent<HTMLDivElement>) => {
+                        e.stopPropagation();
+                        setDraggingIndex(index);
+                        e.dataTransfer.effectAllowed = "move";
+                        e.dataTransfer.setData("text/plain", String(index));
+                      }}
+                      onDragEnd={() => {
+                        setDraggingIndex(null);
+                        setDragOverIndex(null);
+                      }}
+                    >
+                      <span className="dragHandleGrip" aria-hidden />
                     </div>
-                  </button>
-                  <div className="exerciseFields">
-                    <input
-                      className="numField"
-                      inputMode="decimal"
-                      placeholder="kg"
-                      value={ex.weight}
-                      onChange={(e) =>
-                        updateRow(index, { weight: e.target.value })
-                      }
-                      aria-label={`Waga: ${ex.name}`}
-                    />
-                    <input
-                      className="numField"
-                      inputMode="numeric"
-                      placeholder="powt."
-                      value={ex.reps}
-                      onChange={(e) =>
-                        updateRow(index, { reps: e.target.value })
-                      }
-                      aria-label={`Powtórzenia: ${ex.name}`}
-                    />
+                  <div className="exerciseLeft">
+                    <button
+                      type="button"
+                      className="exerciseLeft-toggle"
+                      onClick={() => toggleDone(index)}
+                      aria-pressed={ex.done}
+                      aria-label={`${ex.name} — ${ex.done ? "done" : "pending"}`}
+                    >
+                      <div className="exerciseNameCell">
+                        <span className="muscleTag">{ex.muscle}</span>
+                        <span className="check-text">{ex.name}</span>
+                      </div>
+                    </button>
+                    <div
+                      className="exerciseBarSets"
+                      onClick={(e) => e.stopPropagation()}
+                      onPointerDown={(e) => e.stopPropagation()}
+                    >
+                      <span className="exerciseBarUnit">kg</span>
+                      <input
+                        type="text"
+                        inputMode="decimal"
+                        className="numField numField--bar"
+                        autoComplete="off"
+                        value={ex.weight}
+                        onFocus={selectAllOnFocus}
+                        onChange={(e) =>
+                          updateRow(index, { weight: e.target.value })
+                        }
+                        aria-label={`Weight in kg: ${ex.name}`}
+                      />
+                      <span className="exerciseBarTimes" aria-hidden>
+                        ×
+                      </span>
+                      <input
+                        type="text"
+                        className="numField numField--bar numField--barReps"
+                        autoComplete="off"
+                        value={ex.reps}
+                        onFocus={selectAllOnFocus}
+                        onChange={(e) =>
+                          updateRow(index, { reps: e.target.value })
+                        }
+                        aria-label={`Repetitions: ${ex.name}`}
+                      />
+                    </div>
                   </div>
                   <button
                     type="button"
                     className="rowRemove"
-                    aria-label={`Usuń ${ex.name}`}
+                    aria-label={`Remove ${ex.name}`}
                     onClick={() => removeRow(index)}
                   >
                     ×
                   </button>
                 </div>
-              ))
+                ))}
+                <div
+                  className={`workoutEndDrop${
+                    dragOverIndex === "end" ? " workoutEndDrop--dragOver" : ""
+                  }`}
+                  onDragOver={(e: ReactDragEvent<HTMLDivElement>) => {
+                    e.preventDefault();
+                    e.dataTransfer.dropEffect = "move";
+                    setDragOverIndex("end");
+                  }}
+                  onDrop={(e: ReactDragEvent<HTMLDivElement>) => {
+                    e.preventDefault();
+                    const from = Number.parseInt(
+                      e.dataTransfer.getData("text/plain"),
+                      10,
+                    );
+                    if (Number.isNaN(from)) return;
+                    moveRowToEnd(from);
+                    setDraggingIndex(null);
+                    setDragOverIndex(null);
+                  }}
+                  aria-label="Drop to move exercise to end of list"
+                />
+              </>
             )}
           </div>
         </div>

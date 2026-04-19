@@ -24,5 +24,8 @@ Thumbs.db
 *.sw?
 .idea/
 
+# Cursor
+.cursor/
+
 # TypeScript
 *.tsbuildinfo

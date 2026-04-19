@@ -10,7 +10,6 @@ export function AppShell() {
             <div className="mark" aria-hidden />
             <div style={{ minWidth: 0 }}>
               <div className="title">Brogress</div>
-              <div className="subtitle">Trening bez zbędnego tłumaczenia</div>
             </div>
           </div>
           <div className="header-actions">
@@ -21,7 +20,7 @@ export function AppShell() {
                 `btn ${isActive ? "btn-toggle-on" : ""}`.trim()
               }
             >
-              Trening
+              Summary
             </NavLink>
             <NavLink
               to="/stats"
@@ -29,7 +28,7 @@ export function AppShell() {
                 `btn ${isActive ? "btn-toggle-on" : ""}`.trim()
               }
             >
-              Objętość
+              Your brogress
             </NavLink>
           </div>
         </header>

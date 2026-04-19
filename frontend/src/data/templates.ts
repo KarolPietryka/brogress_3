@@ -19,16 +19,16 @@ const push: WorkoutTemplate = {
   exercises: [
     {
       id: "1",
-      muscle: "Klatka",
-      name: "Wyciskanie sztangi",
+      muscle: "Chest",
+      name: "Barbell bench press",
       weight: "80",
       reps: "5",
       done: false,
     },
     {
       id: "2",
-      muscle: "Barki",
-      name: "Wyciskanie hantli siedząc",
+      muscle: "Shoulders",
+      name: "Seated dumbbell press",
       weight: "22",
       reps: "10",
       done: false,
@@ -36,7 +36,7 @@ const push: WorkoutTemplate = {
     {
       id: "3",
       muscle: "Triceps",
-      name: "Prostowanie linek",
+      name: "Cable triceps pushdown",
       weight: "25",
       reps: "12",
       done: false,
@@ -50,16 +50,16 @@ const pull: WorkoutTemplate = {
   exercises: [
     {
       id: "1",
-      muscle: "Plecy",
-      name: "Martwy ciąg rumuński",
+      muscle: "Back",
+      name: "Romanian deadlift",
       weight: "100",
       reps: "8",
       done: false,
     },
     {
       id: "2",
-      muscle: "Plecy",
-      name: "Podciąganie nachwytem",
+      muscle: "Back",
+      name: "Pull-ups (overhand)",
       weight: "0",
       reps: "8",
       done: false,
@@ -67,7 +67,7 @@ const pull: WorkoutTemplate = {
     {
       id: "3",
       muscle: "Biceps",
-      name: "Uginanie młotkowe",
+      name: "Hammer curl",
       weight: "16",
       reps: "10",
       done: false,
@@ -77,28 +77,28 @@ const pull: WorkoutTemplate = {
 
 const legs: WorkoutTemplate = {
   id: "legs",
-  label: "Nogi C",
+  label: "Legs C",
   exercises: [
     {
       id: "1",
-      muscle: "Nogi",
-      name: "Przysiad ze sztangą",
+      muscle: "Legs",
+      name: "Barbell back squat",
       weight: "110",
       reps: "5",
       done: false,
     },
     {
       id: "2",
-      muscle: "Nogi",
-      name: "Wykroki chodzone",
+      muscle: "Legs",
+      name: "Walking lunges",
       weight: "24",
       reps: "10",
       done: false,
     },
     {
       id: "3",
-      muscle: "Dwugłowe",
-      name: "Żuraw nordycki",
+      muscle: "Hamstrings",
+      name: "Nordic hamstring curl",
       weight: "12",
       reps: "12",
       done: false,

@@ -1,17 +1,232 @@
 /* Layout glue for React shell; design tokens live in repo-root styles.css */
 
-.templateCarousel {
-  display: flex;
-  gap: 8px;
-  overflow-x: auto;
-  padding: 4px 2px 12px;
-  margin: 0 -2px;
-  scroll-snap-type: x proximity;
-  -webkit-overflow-scrolling: touch;
+.trainingView {
+  border: none;
+  background: transparent;
+  box-shadow: none;
 }
 
-.templateCarousel .choice {
+.trainingView-head {
+  padding: 0 0 12px;
+  margin: 0 0 4px;
+  border: none;
+  background: transparent;
+}
+
+.trainingView-head .panel-title {
+  margin: 0;
+}
+
+/* Swiper: templates — center slide “in depth”, sides as thumbnails; arrows from Navigation module */
+.template-swiper-wrap {
+  position: relative;
+  padding: 12px 6px 32px;
+  margin: 0 -6px;
+}
+
+.template-swiper {
+  overflow: visible;
+  padding-bottom: 6px;
+}
+
+.template-swiper .swiper-slide {
+  width: min(300px, 76vw);
+  height: auto;
+  box-sizing: border-box;
+}
+
+.template-swiper .choice--carousel {
+  width: 100%;
+  min-height: 108px;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+.template-swiper-wrap .swiper-button-prev,
+.template-swiper-wrap .swiper-button-next {
+  width: 40px;
+  height: 40px;
+  margin-top: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(0, 0, 0, 0.35);
+  color: rgba(255, 207, 90, 0.95);
+  transition: background 140ms ease, border-color 140ms ease, transform 140ms ease;
+}
+
+.template-swiper-wrap .swiper-button-prev:hover,
+.template-swiper-wrap .swiper-button-next:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 207, 90, 0.45);
+}
+
+.template-swiper-wrap .swiper-button-prev::after,
+.template-swiper-wrap .swiper-button-next::after {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.template-swiper-wrap .swiper-button-prev {
+  left: 2px;
+}
+
+.template-swiper-wrap .swiper-button-next {
+  right: 2px;
+}
+
+.template-swiper-wrap .swiper-button-disabled {
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+@media (max-width: 520px) {
+  .template-swiper-wrap .swiper-button-prev {
+    left: 0;
+  }
+
+  .template-swiper-wrap .swiper-button-next {
+    right: 0;
+  }
+}
+
+/* Wiersz ćwiczenia: „100 kg × 3” — jedna linia, bez zawijania; obok nazwy (ta sama wysokość UI). */
+.exerciseBarSets {
+  display: inline-flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  align-self: center;
   flex: 0 0 auto;
-  min-width: 132px;
-  scroll-snap-align: start;
+  gap: 8px;
+  min-width: 0;
+  margin: 0;
+}
+
+.exerciseBarSets .numField {
+  margin: 0;
+  vertical-align: middle;
+}
+
+.exerciseBarUnit {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted2);
+  flex-shrink: 0;
+  align-self: center;
+}
+
+.exerciseBarTimes {
+  font-family: var(--mono);
+  font-size: 15px;
+  color: var(--muted);
+  line-height: 1;
+  padding: 0 2px;
+  flex-shrink: 0;
+  user-select: none;
+  align-self: center;
+}
+
+/* Waga / powt.: wąskie pola (monospace); lekko poszerzone wzgl. „3ch / 2ch” */
+.numField--bar {
+  flex: 0 0 auto;
+  box-sizing: border-box;
+  width: calc(4ch + 14px);
+  min-width: calc(4ch + 14px);
+  max-width: calc(4ch + 14px);
+  height: 40px;
+  padding: 0 6px;
+  font-family: var(--mono);
+  font-size: 16px;
+  line-height: 1.15;
+  text-align: center;
+  align-self: center;
+}
+
+.numField--barReps {
+  flex: 0 0 auto;
+  box-sizing: border-box;
+  width: calc(3ch + 14px);
+  min-width: calc(3ch + 14px);
+  max-width: calc(3ch + 14px);
+  height: 40px;
+  padding: 0 6px;
+  font-family: var(--mono);
+  font-size: 16px;
+  line-height: 1.15;
+  text-align: center;
+  align-self: center;
+}
+
+@media (max-width: 640px) {
+  .checks--draftFlip .exerciseBarSets .numField--bar {
+    width: calc(4ch + 14px);
+    min-width: calc(4ch + 14px);
+    max-width: calc(4ch + 14px);
+    height: 38px;
+  }
+
+  .checks--draftFlip .exerciseBarSets .numField--barReps {
+    width: calc(3ch + 14px);
+    min-width: calc(3ch + 14px);
+    max-width: calc(3ch + 14px);
+    height: 38px;
+  }
+
+  .checks--draftFlip .exerciseRow:not(.exerciseRow--composer) {
+    grid-template-columns: 26px minmax(0, 1fr) 34px;
+    grid-template-rows: auto;
+    column-gap: 8px;
+  }
+
+  .checks--draftFlip .exerciseRow:not(.exerciseRow--composer) .dragHandleSpacer,
+  .checks--draftFlip .exerciseRow:not(.exerciseRow--composer) .dragHandle {
+    grid-row: 1;
+  }
+
+  .checks--draftFlip .exerciseRow:not(.exerciseRow--composer) .exerciseLeft {
+    grid-column: 2;
+    grid-row: 1;
+    min-width: 0;
+  }
+
+  .checks--draftFlip .exerciseRow:not(.exerciseRow--composer) .rowRemove {
+    grid-column: 3;
+    grid-row: 1;
+    align-self: start;
+  }
+
+  .checks--draftFlip .exerciseRow:not(.exerciseRow--composer) .exerciseNameCell {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 4px;
+  }
+
+  .checks--draftFlip
+    .exerciseRow:not(.exerciseRow--composer)
+    .exerciseNameCell
+    .muscleTag {
+    grid-column: unset;
+    grid-row: unset;
+    width: auto;
+  }
+
+  .checks--draftFlip
+    .exerciseRow:not(.exerciseRow--composer)
+    .exerciseNameCell
+    .check-text {
+    grid-column: unset;
+    grid-row: unset;
+    padding: 0;
+    white-space: normal;
+    word-break: break-word;
+  }
 }

@@ -9,26 +9,26 @@ import {
 } from "recharts";
 
 const WEEKLY_VOLUME = [
-  { label: "Pn", kg: 4200 },
-  { label: "Wt", kg: 0 },
-  { label: "Śr", kg: 5100 },
-  { label: "Cz", kg: 0 },
-  { label: "Pt", kg: 4800 },
-  { label: "So", kg: 3600 },
-  { label: "Nd", kg: 0 },
+  { label: "Mon", kg: 4200 },
+  { label: "Tue", kg: 0 },
+  { label: "Wed", kg: 5100 },
+  { label: "Thu", kg: 0 },
+  { label: "Fri", kg: 4800 },
+  { label: "Sat", kg: 3600 },
+  { label: "Sun", kg: 0 },
 ];
 
 export function StatsPage() {
   return (
     <div className="panel graph-shell-panel">
       <div className="panel-head">
-        <h1 className="panel-title">Objętość tygodnia</h1>
+        <h1 className="panel-title">Weekly volume</h1>
         <p className="panel-hint">
-          Przykładowy wykres (Recharts) — szkic pod późniejsze dane z API.
+          Sample chart (Recharts) — placeholder for future API-backed data.
         </p>
       </div>
       <div className="graph-shell">
-        <p className="graph-shell-status pill">Σ kg × powt. (mock)</p>
+        <p className="graph-shell-status pill">Σ kg × reps (mock)</p>
         <div className="volume-chart-region">
           <div className="volume-chart">
             <ResponsiveContainer width="100%" height="100%">
@@ -66,7 +66,7 @@ export function StatsPage() {
                 <Line
                   type="monotone"
                   dataKey="kg"
-                  name="Objętość"
+                  name="Volume"
                   stroke="#ffcf5a"
                   strokeWidth={2}
                   dot={{ fill: "#ff8e5a", strokeWidth: 0, r: 4 }}
