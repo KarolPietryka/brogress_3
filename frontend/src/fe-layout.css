@@ -1,4 +1,4 @@
-/* Layout glue for React shell; design tokens live in repo-root styles.css */
+/* Layout glue for React shell; design tokens live in ./styles.css (same src bundle) */
 
 .trainingView {
   border: none;

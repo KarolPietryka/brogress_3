@@ -1069,6 +1069,42 @@ body.is-pointer-dragging * {
   outline-offset: 2px;
 }
 
+select.composerPickTrigger {
+  -webkit-appearance: none;
+  appearance: none;
+  cursor: pointer;
+}
+
+/* Free-text exercise name in sticky composer (no picker chevron). */
+.composerExerciseInput {
+  min-width: 0;
+  width: 100%;
+  height: 46px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background-color: rgba(0, 0, 0, 0.18);
+  color: var(--text);
+  padding: 0 12px;
+  font-size: 14px;
+  font-family: inherit;
+  line-height: 1.2;
+  outline: none;
+  color-scheme: dark;
+}
+
+.composerExerciseInput::placeholder {
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.composerExerciseInput:focus {
+  border-color: rgba(255, 207, 90, 0.45);
+}
+
+.composerExerciseInput:focus-visible {
+  outline: 2px solid rgba(255, 207, 90, 0.55);
+  outline-offset: 2px;
+}
+
 .composerPickTrigger__text {
   display: block;
   overflow: hidden;
@@ -1494,6 +1530,36 @@ body.is-pointer-dragging * {
   flex: 1;
   min-width: 0;
   cursor: pointer;
+}
+
+/* Native <button> defaults to a light system background; match the exercise row bar instead. */
+.exerciseLeft-toggle {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.exerciseLeft-toggle:focus {
+  outline: none;
+}
+
+.exerciseLeft-toggle:focus-visible {
+  outline: 2px solid rgba(255, 207, 90, 0.55);
+  outline-offset: 2px;
+  border-radius: 12px;
 }
 
 .exerciseLeft input {

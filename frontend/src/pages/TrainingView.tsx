@@ -14,9 +14,33 @@ import {
   type ExerciseLine,
   type WorkoutTemplate,
 } from "../data/templates";
+import {
+  COMPOSER_MUSCLE_OPTIONS,
+  MAX_REPS_INPUT_LEN,
+  MAX_WEIGHT_INPUT_LEN,
+  newComposerLineId,
+  sanitizeOptionalDecimalInput,
+} from "../lib/trainingComposerHelpers";
 
 function lineKey(ex: ExerciseLine, index: number): string {
   return `${ex.id}-${index}`;
+}
+
+/** Seed sticky composer from the last plan row (same idea as lastDraftLineComposerPrefill). */
+function tailPrefill(exercises: ExerciseLine[]): {
+  muscle: string;
+  weight: string;
+  reps: string;
+} {
+  const t = exercises[exercises.length - 1];
+  if (!t) {
+    return {
+      muscle: COMPOSER_MUSCLE_OPTIONS[0] ?? "Chest",
+      weight: "0",
+      reps: "",
+    };
+  }
+  return { muscle: t.muscle, weight: t.weight, reps: t.reps };
 }
 
 /** Select all on focus (click / Tab); one-time mouseup preventDefault so selection stays. */
@@ -39,6 +63,13 @@ export function TrainingView() {
   const [dragOverIndex, setDragOverIndex] = useState<number | "end" | null>(
     null,
   );
+
+  const pre0 = tailPrefill(initial.exercises);
+  const [composerMuscle, setComposerMuscle] = useState(pre0.muscle);
+  const [composerName, setComposerName] = useState("");
+  const [composerWeight, setComposerWeight] = useState(pre0.weight);
+  const [composerReps, setComposerReps] = useState(pre0.reps);
+  const [composerFlash, setComposerFlash] = useState(false);
 
   useEffect(() => {
     const snapshot: WorkoutTemplate = {
@@ -83,7 +114,32 @@ export function TrainingView() {
 
   function applyTemplate(t: WorkoutTemplate) {
     setActiveTemplateId(t.id);
-    setRows(cloneTemplate(t).exercises);
+    const exs = cloneTemplate(t).exercises;
+    setRows(exs);
+    const pre = tailPrefill(exs);
+    setComposerMuscle(pre.muscle);
+    setComposerWeight(pre.weight);
+    setComposerReps(pre.reps);
+    setComposerName("");
+  }
+
+  function addExerciseFromComposer() {
+    const name = composerName.trim();
+    if (!name) return;
+    const line: ExerciseLine = {
+      id: newComposerLineId(),
+      muscle: composerMuscle,
+      name,
+      weight: composerWeight || "0",
+      reps: composerReps,
+      done: false,
+    };
+    setRows((prev) => [...prev, line]);
+    setComposerName("");
+    setComposerMuscle(line.muscle);
+    setComposerWeight(line.weight);
+    setComposerReps(line.reps);
+    setComposerFlash(true);
   }
 
   function updateRow(index: number, patch: Partial<ExerciseLine>) {
@@ -141,6 +197,96 @@ export function TrainingView() {
           activeTemplateId={activeTemplateId}
           onSelectTemplate={applyTemplate}
         />
+
+        <div className="workoutComposerBlock">
+          <form
+            className={`exerciseRow exerciseRow--composer${
+              composerFlash ? " exerciseRow--composerFlash" : ""
+            }`}
+            aria-label="Add new exercise"
+            onSubmit={(e) => {
+              e.preventDefault();
+              addExerciseFromComposer();
+            }}
+            onAnimationEnd={(e) => {
+              if (e.target !== e.currentTarget) return;
+              if (!e.animationName.includes("composerRowBlueFlash")) return;
+              setComposerFlash(false);
+            }}
+          >
+            <div className="dragHandleSpacer" aria-hidden />
+            <div className="exerciseNameCell exerciseNameCell--composer">
+              <select
+                className="composerPickTrigger composerPickTrigger--group"
+                aria-label="Muscle group"
+                value={composerMuscle}
+                onChange={(e) => setComposerMuscle(e.target.value)}
+              >
+                {!COMPOSER_MUSCLE_OPTIONS.includes(composerMuscle) ? (
+                  <option value={composerMuscle}>{composerMuscle}</option>
+                ) : null}
+                {COMPOSER_MUSCLE_OPTIONS.map((m) => (
+                  <option key={m} value={m}>
+                    {m}
+                  </option>
+                ))}
+              </select>
+              <input
+                type="text"
+                className="composerExerciseInput composerPickTrigger--exercise"
+                autoComplete="off"
+                placeholder="Exercise name"
+                value={composerName}
+                onChange={(e) => setComposerName(e.target.value)}
+                aria-label="Exercise name"
+              />
+            </div>
+            <div className="exerciseFields">
+              <input
+                className="numField"
+                inputMode="decimal"
+                maxLength={MAX_WEIGHT_INPUT_LEN}
+                placeholder="Weight"
+                value={composerWeight}
+                onChange={(e) =>
+                  setComposerWeight(
+                    sanitizeOptionalDecimalInput(
+                      e.target.value,
+                      MAX_WEIGHT_INPUT_LEN,
+                    ),
+                  )
+                }
+                onFocus={selectAllOnFocus}
+                aria-label="Weight kg"
+              />
+              <input
+                className="numField"
+                inputMode="decimal"
+                maxLength={MAX_REPS_INPUT_LEN}
+                placeholder="Reps"
+                value={composerReps}
+                onChange={(e) =>
+                  setComposerReps(
+                    sanitizeOptionalDecimalInput(
+                      e.target.value,
+                      MAX_REPS_INPUT_LEN,
+                    ),
+                  )
+                }
+                onFocus={selectAllOnFocus}
+                aria-label="Repetitions"
+              />
+            </div>
+            <button
+              type="submit"
+              className="rowAdd"
+              disabled={!composerName.trim()}
+              aria-label="Add exercise to plan"
+            >
+              +
+            </button>
+          </form>
+        </div>
 
         <div className="grouped">
           <div className="groupHeaderRow">
